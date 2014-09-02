@@ -1,4 +1,4 @@
-package com.timer;
+package com.Timer;
 
 public class Timer {
 
