@@ -12,7 +12,7 @@ public SimpleVector position;
 	public void Fire(SimpleVector Target){
 		
 		BulletManager bCreate= new BulletManager();
-		bCreate.createBullet(6, 6);
+		//bCreate.createBullet(6, 6);
 		
 		
 	}
