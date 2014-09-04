@@ -9,25 +9,28 @@ import android.view.VelocityTracker;
 import com.threed.jpct.SimpleVector;
 
 public class BulletManager  {
- SimpleVector one,two;
+
 	
   List<Bullet> bullets = new ArrayList<Bullet>();
 	
-	public void createBullet(SimpleVector positon, SimpleVector direction,int damage, float speed){
-		SimpleVector a,b;
+	public void createBullet(SimpleVector positonOnClick, SimpleVector direction,int damage, float speed){
+		
+		
+		
+		
+		//.damage= 20;
+	    //	bullet.position = a;
+		//bullet.velocity= b;
+		//speed.scalarMul(veloity*direction);
+				//bullets.add(bullet);
 		
 		Bullet bullet=new Bullet();
-		
-		bullet.damage= 20;
-	//	bullet.position = a;
-		
-		//bullet.velocity= b;
-		SimpleVector adjustedVelocity= bullet.velocity;
-		
-		//speed.scalarMul(veloity*direction);
-		
+		bullet.bulletVelocity = direction;
+		bullet.bulletVelocity.scalarMul(speed);
+		bullet.damage = damage;
 		
 		bullets.add(bullet);
+		
 		
 			
 		
@@ -37,14 +40,11 @@ public class BulletManager  {
 	
 	
 	public void update(float elapsedTime){
+		
 		Bullet bullet=new Bullet();
-	 	
-		 //elapsedtime=1/60 then multiply v by 1 
-	 	
-	
-		SimpleVector adjustedVelocity= bullet.velocity;
+		SimpleVector adjustedVelocity= bullet.bulletVelocity;
 		adjustedVelocity.scalarMul(elapsedTime*60);
-		 bullet.position.add(bullet.velocity);
+		 bullet.bulletPosition.add(bullet.bulletVelocity);
 	}
 	
 	

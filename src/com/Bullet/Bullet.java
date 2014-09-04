@@ -1,13 +1,24 @@
 package com.Bullet;
 
+import com.Sprite.SimpleSpriteToken;
+import com.Sprite.SpriteManager;
 import com.threed.jpct.SimpleVector;
 
 
 public class Bullet {
-
+	SimpleSpriteToken token;
 	public int damage;
-	public SimpleVector position;
-	public SimpleVector velocity;
+	public SimpleVector bulletPosition;
+	public SimpleVector bulletVelocity;
+	
+	public Bullet(){
+		
+		token=SpriteManager.GetInstance().AddSimpleSprite("bullet_blueprint", 0);	
+		 token.SetPosition(new SimpleVector(0,500,0));
+			
+			
+		}
+	
 	
 	
 	

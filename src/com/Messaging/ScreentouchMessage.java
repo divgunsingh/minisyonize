@@ -3,8 +3,8 @@ package com.Messaging;
 public class ScreentouchMessage implements IMessage {
 	
 
-	float x;
-	float y;
+	public float x;
+	public float y;
 	
 	public ScreentouchMessage(float X , float Y){
 		x=X;

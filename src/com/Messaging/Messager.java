@@ -9,9 +9,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Messager {
+	private static Messager _instance = null;
+	public static Messager GetInstance(){
+		if(_instance == null)
+			_instance = new Messager();
+		
+		return _instance;
+	}
+	
     Map<Type, ActionQueue> queueMap;
 
-    public Messager(){
+    private Messager(){
         queueMap = new HashMap<Type, ActionQueue>();
     }
 

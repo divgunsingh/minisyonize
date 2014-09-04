@@ -12,10 +12,16 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.MotionEvent;
 
+import com.Bullet.Bullet;
 import com.Bullet.BulletManager;
 import com.Enemy.EnemyManager;
 import com.Messaging.Messager;
 import com.Messaging.ScreentouchMessage;
+import com.Player.Player;
+import com.Sprite.SimpleSpriteBlueprint;
+import com.Sprite.SimpleSpriteToken;
+import com.Sprite.SpriteBlueprintProvider;
+import com.Sprite.SpriteManager;
 import com.minisyonize.R;
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
@@ -46,7 +52,9 @@ public class HelloWorld extends Activity {
    Messager messager;
 	// Used to handle pause and resume...
 	private static HelloWorld master = null;
-
+	//Player calling
+	Bullet bullet;
+     Player player;
 	private GLSurfaceView mGLView;
 	private MyRenderer renderer = null;
 	private FrameBuffer fb = null;
@@ -131,7 +139,8 @@ public class HelloWorld extends Activity {
 			xpos = me.getX();
 			ypos = me.getY();
 			
-			//messager.Publish(new ScreentouchMessage(xpos,ypos));
+			Messager.GetInstance().Publish(new ScreentouchMessage(xpos,ypos));
+			//player.Fire(new SimpleVector(xpos,ypos,0));
 			return true;
 		}
 
@@ -178,6 +187,7 @@ public class HelloWorld extends Activity {
 		}
 
 		public void onSurfaceChanged(GL10 gl, int w, int h) {
+			
 			if (fb != null) {
 				fb.dispose();
 			}
@@ -192,9 +202,20 @@ public class HelloWorld extends Activity {
 				sun.setIntensity(250, 250, 250);
 
 				// Create a texture out of the icon...:-)
-				Texture texture = new Texture(BitmapHelper.rescale(BitmapHelper.convert(getResources().getDrawable(R.drawable.icon)), 64, 64));
+				Texture texture = new Texture(BitmapHelper.rescale(BitmapHelper.convert(getResources().getDrawable(R.raw.enemy2)), 64, 64));
 				TextureManager.getInstance().addTexture("texture", texture);
-
+				// to create a texture in the manager 
+				TextureManager.getInstance().addTexture("texture_label", new Texture(getResources().openRawResource(R.raw.enemy), true));
+				TextureManager.getInstance().addTexture("player", new Texture(getResources().openRawResource(R.raw.player), true));
+				TextureManager.getInstance().addTexture("bullet", new Texture(getResources().openRawResource(R.raw.bullet), true));
+				// to create a simple sprite blueprint in the sprite blueprint provider 
+				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("player_blueprint", new SimpleSpriteBlueprint("player", new SimpleVector(0,0,0) , 10f));
+				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("bullet_blueprint", new SimpleSpriteBlueprint("bullet", new SimpleVector(0,0,0) , 5f));
+				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("sprite_blueprint_label", new SimpleSpriteBlueprint("texture_label", new SimpleVector(0,0,0) , 5f));
+				// to instantiate a sprite from the sprite manager 
+				SpriteManager.GetInstance().AddSimpleSprite("sprite_blueprint_label", 0);
+				//SimpleSpriteToken tokenPlayer=SpriteManager.GetInstance().AddSimpleSprite("player_blueprint", 0);
+                
 				cube = Primitives.getCube(10);
 				cube.calcTextureWrapSpherical();
 				cube.setTexture("texture");
@@ -213,7 +234,10 @@ public class HelloWorld extends Activity {
 				sv.z -= 100;
 				sun.setPosition(sv);
 				MemoryHelper.compact();
-
+				//calling constructor of player class
+				player=new Player();
+				//bullet=new Bullet();
+		
 				if (master == null) {
 					Logger.log("Saving master Activity!");
 					master = HelloWorld.this;
@@ -230,8 +254,8 @@ public class HelloWorld extends Activity {
         	
 	deltaTickTime=System.currentTimeMillis() - prviousTickTime;
 	prviousTickTime = System.currentTimeMillis();
-			//enemyManager.update(6);
-			bulletManager.update(6);
+			//enemyManager.Update(1.0f / 60.0f);
+			//bulletManager.update(1.0f / 60.0f);
         	
         	
         }
@@ -247,8 +271,11 @@ public class HelloWorld extends Activity {
 			}
 
 			fb.clear(back);
+			update();
 			world.renderScene(fb);
 			world.draw(fb);
+			//draw our object 
+			SpriteManager.GetInstance().Draw(fb);
 			fb.display();
 
 			if (System.currentTimeMillis() - time >= 1000) {
