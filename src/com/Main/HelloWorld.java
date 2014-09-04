@@ -66,7 +66,7 @@ public class HelloWorld extends Activity {
 
 	protected void onCreate(Bundle savedInstanceState) {
 
-		enemyManager = new EnemyManager();
+		//enemyManager = new EnemyManager();
 		bulletManager= new BulletManager();
 		Logger.log("onCreate");
 
@@ -131,7 +131,7 @@ public class HelloWorld extends Activity {
 			xpos = me.getX();
 			ypos = me.getY();
 			
-			messager.Publish(new ScreentouchMessage(xpos,ypos));
+			//messager.Publish(new ScreentouchMessage(xpos,ypos));
 			return true;
 		}
 
@@ -230,7 +230,7 @@ public class HelloWorld extends Activity {
         	
 	deltaTickTime=System.currentTimeMillis() - prviousTickTime;
 	prviousTickTime = System.currentTimeMillis();
-			enemyManager.update(6);
+			//enemyManager.update(6);
 			bulletManager.update(6);
         	
         	

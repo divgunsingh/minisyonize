@@ -4,16 +4,14 @@ public class Timer {
 
 	float remainingTime;
 	
-		private boolean isFinished() {
-			return remainingTime<=0; 
-		}
+	private boolean isFinished() {
+		return remainingTime<=0;
+	}
     
-		public void update(float elapsedTime){
-			while(remainingTime!=0) {
-				elapsedTime=elapsedTime-1;
-			}
-		}
-    
+	public void update(float elapsedTime){
+		remainingTime -= elapsedTime;	
+	}			
 }
+
 
  

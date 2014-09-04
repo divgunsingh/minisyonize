@@ -3,14 +3,7 @@ import com.threed.jpct.SimpleVector;
 import java.util.Vector;
 
 public class Enemy {
-	SimpleVector vector;
-	float speed;
+	SimpleVector position;
 	SimpleVector velocity;
 	int health;
-	public void vectorposition(){
-	}
-	
-	
-	}
-
-
+}
