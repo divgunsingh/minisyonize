@@ -14,12 +14,17 @@ public class Bullet {
 	public Bullet(){
 		
 		token=SpriteManager.GetInstance().AddSimpleSprite("bullet_blueprint", 0);	
-		 token.SetPosition(new SimpleVector(0,500,0));
+		token.SetPosition(new SimpleVector(0,5,0));
 			
 			
 		}
 	
-	
+	public void setPosition(SimpleVector targetPosition) {
+		
+		
+		bulletPosition=targetPosition;
+		token.SetPosition(targetPosition);
+	}
 	
 	
 }

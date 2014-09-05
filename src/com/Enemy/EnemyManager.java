@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.Sprite.SimpleSpriteToken;
+import com.Sprite.SpriteManager;
 import com.threed.jpct.SimpleVector;
 
 public class EnemyManager {
@@ -13,23 +15,21 @@ public class EnemyManager {
 	float enemySpeed;
 	SimpleVector playerPosition;
 	
-	List<Enemy> enemies;
+	public static List<Enemy> enemies;
+		
 	
 	public EnemyManager(SimpleVector PlayerPosition){
-		enemies = new ArrayList<Enemy>();
-		
+		enemies = new ArrayList<Enemy>();	
 		playerPosition = PlayerPosition;
 	}
 	
-	public void Update(float elapsedtime){
+	public void Update(float elapsedTime){
 		for(Enemy e : enemies){
-			SimpleVector adjustedVelocity = e.velocity;
-			adjustedVelocity.scalarMul(elapsedtime * 60.0f);
-			
-			e.position.add(adjustedVelocity);
+			e.Update(elapsedTime);
 		}
 	}
 	public void SpawnEnergy(){
+		SpriteManager.GetInstance();
 		SimpleVector positionOfEnemy = RandomlyGenerateSpawnLocation();
 		
 		SimpleVector enemyVelocity = playerPosition;
@@ -58,6 +58,7 @@ public SimpleVector RandomlyGenerateSpawnLocation(){
       }else{  
     	  return new SimpleVector(0, randomLocation - w, 0);
     	  // return a new SimpleVector with x = 0 and y = randomLocation
-      }
+       }
+     
 }
 }

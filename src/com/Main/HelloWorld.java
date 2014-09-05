@@ -18,6 +18,7 @@ import com.Enemy.EnemyManager;
 import com.Messaging.Messager;
 import com.Messaging.ScreentouchMessage;
 import com.Player.Player;
+import com.Sprite.AnimatedSpriteBlueprint;
 import com.Sprite.SimpleSpriteBlueprint;
 import com.Sprite.SimpleSpriteToken;
 import com.Sprite.SpriteBlueprintProvider;
@@ -206,15 +207,17 @@ public class HelloWorld extends Activity {
 				TextureManager.getInstance().addTexture("texture", texture);
 				// to create a texture in the manager 
 				TextureManager.getInstance().addTexture("texture_label", new Texture(getResources().openRawResource(R.raw.enemy), true));
-				TextureManager.getInstance().addTexture("player", new Texture(getResources().openRawResource(R.raw.player), true));
+				TextureManager.getInstance().addTexture("player", new Texture(getResources().openRawResource(R.raw.playerall), true));
 				TextureManager.getInstance().addTexture("bullet", new Texture(getResources().openRawResource(R.raw.bullet), true));
 				// to create a simple sprite blueprint in the sprite blueprint provider 
-				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("player_blueprint", new SimpleSpriteBlueprint("player", new SimpleVector(0,0,0) , 10f));
+				SpriteBlueprintProvider.GetInstance().AddAnimatedSpriteBlueprint("playerlabel", new AnimatedSpriteBlueprint("player", new SimpleVector(0,1000,0), 10f, new int[]{4} , 2f, 16, 16));
 				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("bullet_blueprint", new SimpleSpriteBlueprint("bullet", new SimpleVector(0,0,0) , 5f));
+				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("playerlabel2", new SimpleSpriteBlueprint("texture_label", new SimpleVector(0,0,0) , 5f));
 				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("sprite_blueprint_label", new SimpleSpriteBlueprint("texture_label", new SimpleVector(0,0,0) , 5f));
 				// to instantiate a sprite from the sprite manager 
-				SpriteManager.GetInstance().AddSimpleSprite("sprite_blueprint_label", 0);
-				//SimpleSpriteToken tokenPlayer=SpriteManager.GetInstance().AddSimpleSprite("player_blueprint", 0);
+				SpriteManager.GetInstance().AddAnimatedSprite("playerlabel", 0);
+				//SpriteManager.GetInstance().AddSimpleSprite("playerlabel", 0);
+				//SimpleSpriteToken tokenPlayer=SpriteManager.GetInstance().AddSimpleSprite("playerlabel", 0);
                 
 				cube = Primitives.getCube(10);
 				cube.calcTextureWrapSpherical();
@@ -271,11 +274,14 @@ public class HelloWorld extends Activity {
 			}
 
 			fb.clear(back);
-			update();
-			world.renderScene(fb);
-			world.draw(fb);
+			
+			//world.renderScene(fb);
+			//world.draw(fb);
 			//draw our object 
+			//SpriteManager.update();
+			SpriteManager.GetInstance().Update(1f/10.0f);
 			SpriteManager.GetInstance().Draw(fb);
+			update();
 			fb.display();
 
 			if (System.currentTimeMillis() - time >= 1000) {
