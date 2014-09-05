@@ -39,6 +39,8 @@ public class TextSprite implements ISprite{
     public int GetAnimationIndex() {Logger.log("WARNING! GetAnimationIndex called on TextSprite"); return -1;}
     public void SetAnimationIndex(int value) {Logger.log("WARNING! SetMessage called on TextSprite");}
 
+    public void FireTemporaryAnimation(int animationIndex){Logger.log("WARNING! FireTemporaryAnimation called on TextSprite");}
+
     int _textureWidth;
     int _textureHeight;
 
@@ -90,10 +92,10 @@ public class TextSprite implements ISprite{
     public void Update(float elapsedTime){}
 
     public void Draw(FrameBuffer fb) {
-        TextureCoords target = new TextureCoords((int) _position.x, (int) _position.y);
+        int targetY = (int) _position.y;
 
         for(int i = 0; i < _message.length(); ++i){
-            target.x = (int) (i * (_scale * _textureWidth));
+            int targetX = (int) _position.x + (int) (i * (_scale * _textureWidth));
 
             int characterIndex = IndexFromCharacter(_message.charAt(i));
             // if -1 then the character doesn't exist in the atlas
@@ -102,7 +104,7 @@ public class TextSprite implements ISprite{
 
             TextureCoords atlasCoords = IndexToCoordinates(characterIndex);
 
-            fb.blit(_atlasTexture, atlasCoords.x, atlasCoords.y, target.x, target.y,
+            fb.blit(_atlasTexture, atlasCoords.x, atlasCoords.y, targetX, targetY,
                     _textureWidth, _textureHeight,
                     (int) (_textureWidth * _scale), (int) (_textureHeight * _scale),
                     255, false);

@@ -37,6 +37,10 @@ public class AnimatedSprite implements ISprite {
     public int GetAnimationIndex(){return _animation.GetCurrentAnimation();}
     public void SetAnimationIndex(int animationIndex){_animation.SwitchAnimation(animationIndex);}
 
+    public void FireTemporaryAnimation(int animationIndex){
+        _animation.FireTemporaryAnimation(animationIndex);
+    }
+
     int _textureWidth;
     int _textureHeight;
 
@@ -59,12 +63,10 @@ public class AnimatedSprite implements ISprite {
     private TextureCoords IndexToCoordinates(int animation, int frame){
         int atlasWidth = _atlasTexture.getWidth();
         int atlasHeight = _atlasTexture.getHeight();
-        int imagesInAtlasX = atlasWidth / _textureWidth;
-        int imagesInAtlasY = atlasHeight / _textureHeight;
 
         // ensure index exists
         int targetX = _textureWidth * frame;
-        int targetY = _textureHeight * frame;
+        int targetY = _textureHeight * animation;
 
         if(targetX < atlasWidth && targetY < atlasHeight)
             return new TextureCoords(targetX, targetY);

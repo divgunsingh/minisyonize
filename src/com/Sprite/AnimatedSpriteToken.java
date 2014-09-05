@@ -29,6 +29,10 @@ public class AnimatedSpriteToken implements ISpriteToken{
         SpriteManager.GetInstance().SwitchSpriteAnimation(animationIndex, this);
     }
 
+    public void FireTemporaryAnimation(int animationIndex){
+        SpriteManager.GetInstance().FireTemporarySpriteAnimation(animationIndex, this);
+    }
+
     public void Delete(){
         SpriteManager.GetInstance().DeleteSprite(this);
     }

@@ -6,7 +6,9 @@ import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.SimpleVector;
 import com.threed.jpct.Texture;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.UUID;
 
 public class SpriteManager {
@@ -65,7 +67,7 @@ public class SpriteManager {
         }
     }
 
-    public AnimatedSpriteToken AddAnimationSprite(String spriteName, int layer){
+    public AnimatedSpriteToken AddAnimatedSprite(String spriteName, int layer){
         HashMap<UUID, ISprite> targetList = _sprites.get(layer);
 
         if(targetList == null) {
@@ -106,7 +108,8 @@ public class SpriteManager {
     public void Draw(FrameBuffer fb){
         for(int i = 0; i < _sprites.size(); i++){
             HashMap<UUID, ISprite> currentMap = _sprites.get(_sprites.keyAt(i));
-            for(UUID id : currentMap.keySet()){
+            Set<UUID> keySet = currentMap.keySet();
+            for(UUID id : keySet){
                 currentMap.get(id).Draw(fb);
             }
         }
@@ -176,5 +179,18 @@ public class SpriteManager {
             return;
 
         subject.SetAnimationIndex(animationIndex);
+    }
+
+    public void FireTemporarySpriteAnimation(int animationIndex, ISpriteToken token){
+        HashMap<UUID, ISprite> spriteList = _sprites.get(token.GetLayer());
+
+        if(spriteList == null)
+            return;
+
+        ISprite subject = spriteList.get(token.GetId());
+        if(subject == null)
+            return;
+
+        subject.FireTemporaryAnimation(animationIndex);
     }
 }

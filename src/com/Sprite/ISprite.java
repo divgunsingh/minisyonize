@@ -25,6 +25,8 @@ public interface ISprite {
     int GetAnimationIndex();
     void SetAnimationIndex(int value);
 
+    void FireTemporaryAnimation(int animationIndex);
+
     void Draw(FrameBuffer fb);
     void Update(float elapsedTime);
 }
