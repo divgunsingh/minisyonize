@@ -28,12 +28,12 @@ public class BulletManager  {
 		
 		Bullet bullet=new Bullet();
 		bullet.bulletVelocity = direction;
-		direction=new SimpleVector(1,1,0);
+		//direction=new SimpleVector(1,1,0);
 		bullet.bulletVelocity.scalarMul(speed);
 		bullet.damage = damage;
 		Logger.log("CreateBullet");
 		Logger.log(positonOnClick.toString());
-		Logger.log(bullet.bulletVelocity.toString());
+		//Logger.log(bullet.bulletVelocity.toString());
 		bullet.setPosition(positonOnClick);
 		bullets.add(bullet);
 	}
@@ -41,7 +41,7 @@ public class BulletManager  {
 	
 	public void update(float elapsedTime){
 		
-		//SimpleVector adjustedVelocity= bullet.bulletVelocity;
+	//	SimpleVector adjustedVelocity= bullet.bulletVelocity;
 		//adjustedVelocity.scalarMul(elapsedTime*60);
 		// bullet.bulletPosition.add(bullet.bulletVelocity);
 		

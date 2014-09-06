@@ -17,24 +17,21 @@ public class Bullet {
 		
 		token=SpriteManager.GetInstance().AddSimpleSprite("bullet_blueprint", 0);	
 		token.SetPosition(new SimpleVector(0,5,0));
-			
-			
 		}
 	public void Update(float elapsedTime){
 		SimpleVector adjustedVelocity = bulletVelocity;
-		adjustedVelocity.scalarMul(elapsedTime * 60.0f+2f);
-		Logger.log("BULLET>UPDATE");
-		//bulletPosition.add(adjustedVelocity);
+		adjustedVelocity.scalarMul(elapsedTime * 60.0f);
+		//Logger.log("BULLET>UPDATE");
+		bulletPosition.add(adjustedVelocity);
 		setPosition(bulletPosition.calcAdd(adjustedVelocity));
-		Logger.log(bulletPosition.toString());
-		Logger.log(adjustedVelocity.toString());
-		String val=Float.toString(elapsedTime);
-		Logger.log(val);
+		//Logger.log(bulletPosition.toString());
+		//Logger.log(adjustedVelocity.toString());
+		//String val=Float.toString(elapsedTime);
+		//Logger.log(val);
 		
 		}
 	
 	public void setPosition(SimpleVector targetPosition) {
-		
 		
 		bulletPosition=targetPosition;
 		token.SetPosition(targetPosition);

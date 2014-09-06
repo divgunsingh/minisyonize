@@ -46,13 +46,12 @@ public class Player {
 		//bullet=new Bullet();
 		//Logger.log("TOUCH");
 		//bulletManager.createBullet(Target, directionOfFire, 2, 5f);
-		bulletManager.createBullet(new SimpleVector(0,0,0), new SimpleVector(1, 1, 0), 2, 5f);
+		
+		bulletManager.createBullet( Target, new SimpleVector(10,10,0), 2, 1f);
 	}
 	public void update(float time){
 		
-		
 		bulletManager.update(1.0f / 60.0f);
-		
 		
 	}
 }
