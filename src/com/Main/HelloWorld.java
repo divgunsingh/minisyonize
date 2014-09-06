@@ -239,6 +239,7 @@ public class HelloWorld extends Activity {
 				MemoryHelper.compact();
 				//calling constructor of player class
 				player=new Player();
+			    enemyManager= new EnemyManager(player.position);
 				//bullet=new Bullet();
 		
 				if (master == null) {
@@ -257,8 +258,9 @@ public class HelloWorld extends Activity {
         	
 	deltaTickTime=System.currentTimeMillis() - prviousTickTime;
 	prviousTickTime = System.currentTimeMillis();
-			//enemyManager.Update(1.0f / 60.0f);
-			//bulletManager.update(1.0f / 60.0f);
+			enemyManager.Update(1.0f / 60.0f);
+			player.update(1.0f / 60.0f);
+			
         	
         	
         }
@@ -279,9 +281,9 @@ public class HelloWorld extends Activity {
 			//world.draw(fb);
 			//draw our object 
 			//SpriteManager.update();
+			update();
 			SpriteManager.GetInstance().Update(1f/10.0f);
 			SpriteManager.GetInstance().Draw(fb);
-			update();
 			fb.display();
 
 			if (System.currentTimeMillis() - time >= 1000) {

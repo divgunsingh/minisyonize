@@ -40,10 +40,19 @@ public class Player {
 		// token.SetPosition(Target);
 		 
 		SimpleVector directionOfFire = position;
-		directionOfFire.sub(Target);
-		directionOfFire.normalize();
+		//irectionOfFire.sub(Target);
+		//directionOfFire.normalize();
+		
 		//bullet=new Bullet();
 		//Logger.log("TOUCH");
-		bulletManager.createBullet(Target, directionOfFire, 2, 5f);
+		//bulletManager.createBullet(Target, directionOfFire, 2, 5f);
+		bulletManager.createBullet(new SimpleVector(0,0,0), new SimpleVector(1, 1, 0), 2, 5f);
+	}
+	public void update(float time){
+		
+		
+		bulletManager.update(1.0f / 60.0f);
+		
+		
 	}
 }
