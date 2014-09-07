@@ -32,7 +32,7 @@ public class BulletManager  {
 		bullet.bulletVelocity.scalarMul(speed);
 		bullet.damage = damage;
 		Logger.log("CreateBullet");
-		Logger.log(positonOnClick.toString());
+		//Logger.log(positonOnClick.toString());
 		//Logger.log(bullet.bulletVelocity.toString());
 		bullet.setPosition(positonOnClick);
 		bullets.add(bullet);

@@ -17,10 +17,11 @@ public class Player {
 	SimpleSpriteToken token;
 	BulletManager bulletManager;
 	Bullet bullet;
+	float sspeed;
 	
 	public Player(){	
 		bulletManager = new BulletManager();
-		
+		 sspeed=2f;
 		token=SpriteManager.GetInstance().AddSimpleSprite("playerlabel2", 0);	
 		token.SetPosition(new SimpleVector(0,1000,0));
 		
@@ -38,16 +39,20 @@ public class Player {
 		//bCreate.createBullet(6, 6);
 		//token=SpriteManager.GetInstance().AddSimpleSprite("bullet_blueprint", 0);	
 		// token.SetPosition(Target);
-		 
-		SimpleVector directionOfFire = position;
-		//irectionOfFire.sub(Target);
+		//position = new SimpleVector(0,200,0);
+		SimpleVector directionOfFire=new SimpleVector(0,0,0) ;
+		SimpleVector Target2=new SimpleVector();
+		Target2=Target;
+		//directionOfFire.sub(Target);
 		//directionOfFire.normalize();
-		
+		Target2.sub(directionOfFire);
+		Target2.normalize();
 		//bullet=new Bullet();
-		//Logger.log("TOUCH");
+		Logger.log(Target2.toString());
 		//bulletManager.createBullet(Target, directionOfFire, 2, 5f);
 		
-		bulletManager.createBullet( Target, new SimpleVector(10,10,0), 2, 1f);
+		
+		bulletManager.createBullet( Target,Target2, 2, 0.01f);
 	}
 	public void update(float time){
 		
