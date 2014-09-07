@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 
 import com.Bullet.Bullet;
 import com.Bullet.BulletManager;
+import com.Enemy.Enemy;
 import com.Enemy.EnemyManager;
 import com.Messaging.Messager;
 import com.Messaging.ScreentouchMessage;
@@ -55,6 +56,7 @@ public class HelloWorld extends Activity {
 	private static HelloWorld master = null;
 	//Player calling
 	Bullet bullet;
+	Enemy enemy;
      Player player;
 	private GLSurfaceView mGLView;
 	private MyRenderer renderer = null;
@@ -193,7 +195,7 @@ public class HelloWorld extends Activity {
 				fb.dispose();
 			}
 			fb = new FrameBuffer(gl, w, h);
-
+            
 			if (master == null) {
 
 				world = new World();
@@ -206,16 +208,18 @@ public class HelloWorld extends Activity {
 				Texture texture = new Texture(BitmapHelper.rescale(BitmapHelper.convert(getResources().getDrawable(R.raw.enemy2)), 64, 64));
 				TextureManager.getInstance().addTexture("texture", texture);
 				// to create a texture in the manager 
-				TextureManager.getInstance().addTexture("texture_label", new Texture(getResources().openRawResource(R.raw.enemy), true));
+				TextureManager.getInstance().addTexture("enemy", new Texture(getResources().openRawResource(R.raw.enemy), true));
 				TextureManager.getInstance().addTexture("player", new Texture(getResources().openRawResource(R.raw.playerall), true));
 				TextureManager.getInstance().addTexture("bullet", new Texture(getResources().openRawResource(R.raw.bullet), true));
 				// to create a simple sprite blueprint in the sprite blueprint provider 
+				//Animated Sprite
 				SpriteBlueprintProvider.GetInstance().AddAnimatedSpriteBlueprint("playerlabel", new AnimatedSpriteBlueprint("player", new SimpleVector(0,1000,0), 10f, new int[]{4} , 2f, 16, 16));
+				//Simple Sprite
 				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("bullet_blueprint", new SimpleSpriteBlueprint("bullet", new SimpleVector(0,0,0) , 5f));
-				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("playerlabel2", new SimpleSpriteBlueprint("texture_label", new SimpleVector(0,0,0) , 5f));
-				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("sprite_blueprint_label", new SimpleSpriteBlueprint("texture_label", new SimpleVector(0,0,0) , 5f));
+				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("enemy_blueprint", new SimpleSpriteBlueprint("enemy", new SimpleVector(0,0,0) , 5f));
+				//sSpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("sprite_blueprint_label", new SimpleSpriteBlueprint("texture_label", new SimpleVector(0,0,0) , 5f));
 				// to instantiate a sprite from the sprite manager 
-				SpriteManager.GetInstance().AddAnimatedSprite("playerlabel", 0);
+			//	SpriteManager.GetInstance().AddAnimatedSprite("playerlabel", 0);
 				//SpriteManager.GetInstance().AddSimpleSprite("playerlabel", 0);
 				//SimpleSpriteToken tokenPlayer=SpriteManager.GetInstance().AddSimpleSprite("playerlabel", 0);
                 
@@ -239,9 +243,11 @@ public class HelloWorld extends Activity {
 				MemoryHelper.compact();
 				//calling constructor of player class
 				player=new Player();
-			    enemyManager= new EnemyManager(player.position);
+			    enemyManager= new EnemyManager(player.position,w,h);
+				
+			   
 				//bullet=new Bullet();
-		
+		// enemy=new Enemy();
 				if (master == null) {
 					Logger.log("Saving master Activity!");
 					master = HelloWorld.this;

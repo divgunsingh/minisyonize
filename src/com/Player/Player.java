@@ -6,6 +6,7 @@ import com.Messaging.IAction;
 import com.Messaging.IMessage;
 import com.Messaging.Messager;
 import com.Messaging.ScreentouchMessage;
+import com.Sprite.AnimatedSpriteToken;
 import com.Sprite.SimpleSpriteToken;
 import com.Sprite.SpriteManager;
 import com.threed.jpct.Logger;
@@ -18,12 +19,14 @@ public class Player {
 	BulletManager bulletManager;
 	Bullet bullet;
 	float sspeed;
-	
+	AnimatedSpriteToken token2;
 	public Player(){	
 		bulletManager = new BulletManager();
 		 sspeed=2f;
-		token=SpriteManager.GetInstance().AddSimpleSprite("playerlabel2", 0);	
-		token.SetPosition(new SimpleVector(0,1000,0));
+			
+		token2 = SpriteManager.GetInstance().AddAnimatedSprite("playerlabel", 0);
+		
+		token2.SetPosition(new SimpleVector(0,1000,0));
 		
 		position = new SimpleVector(0,0,0);
 		
