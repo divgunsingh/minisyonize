@@ -5,31 +5,12 @@ import com.threed.jpct.Texture;
 
 import java.util.UUID;
 
-public class TextSpriteToken implements ISpriteToken {
-    private UUID _id;
-    private int _layer;
-
-    public UUID GetId()   {return _id;}
-    public int GetLayer() {return _layer;}
-
+public class TextSpriteToken extends BaseSpriteToken {
     public TextSpriteToken(TextSprite reference, int layer){
-        _id = reference.GetId();
-        _layer = layer;
+        super(reference, layer);
     }
 
-    public void SetPosition(SimpleVector position){
-        SpriteManager.GetInstance().UpdateSpritePosition(position, this);
-    }
-
-    public void SetScale(float scale){
-        SpriteManager.GetInstance().UpdateSpriteScale(scale, this);
-    }
-
-    public void SetAtlasTexture(Texture texture){
-        SpriteManager.GetInstance().UpdateSpriteTexture(texture, this);
-    }
-
-    public void Delete(){
-        SpriteManager.GetInstance().DeleteSprite(this);
+    public void SetMessage(String message){
+        SpriteManager.GetInstance().UpdateSpriteMessage(message, this);
     }
 }

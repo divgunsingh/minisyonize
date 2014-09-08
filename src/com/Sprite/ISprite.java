@@ -17,13 +17,18 @@ public interface ISprite {
     void SetScale(float value);
 
     Texture GetTexture();
-    void SetTexture(Texture value);
 
     String GetMessage();
     void SetMessage(String value);
 
     int GetAnimationIndex();
     void SetAnimationIndex(int value);
+
+    int GetScaledPixelWidth();
+    int GetScaledPixelHeight();
+
+    SimpleVector GetScaledCentre();
+    void RecalculateAdjustedTextureSize();
 
     void FireTemporaryAnimation(int animationIndex);
 

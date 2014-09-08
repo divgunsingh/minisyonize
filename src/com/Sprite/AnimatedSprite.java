@@ -1,38 +1,29 @@
 package com.Sprite;
 
 import com.threed.jpct.FrameBuffer;
+import com.threed.jpct.Logger;
 import com.threed.jpct.SimpleVector;
 import com.threed.jpct.Texture;
 import com.threed.jpct.TextureManager;
 
 import java.util.UUID;
 
-public class AnimatedSprite implements ISprite {
-    private UUID _id;
-    public UUID GetId() {return _id;}
-    public void SetId(UUID value) {_id = value;}
-
-    private SimpleVector _position;
-    public SimpleVector GetPosition(){
-        return _position;
-    }
-    public void SetPosition(SimpleVector value){
-        _position = value;
-    }
-
-    private float _scale;
-    public float GetScale() {return _scale;}
-    public void SetScale(float value) {
-        _scale = value;}
-
-    private String _message;
-    public String GetMessage() {return _message;}
-    public void SetMessage(String value) {_message = value;}
-
+public class AnimatedSprite extends BaseSprite {
+    /* BASIC IMAGE DATA */
     private Texture _atlasTexture;
-    public Texture GetTexture() {return _atlasTexture;}
-    public void SetTexture(Texture value) {_atlasTexture = value;}
+    public Texture GetTexture() {
+        return _atlasTexture;
+    }
 
+    int _textureWidth;
+    int _textureHeight;
+    int _scaledPixelWidth;
+    int _scaledPixelHeight;
+
+    public int GetScaledPixelWidth(){return _scaledPixelWidth;}
+    public int GetScaledPixelHeight() {return _scaledPixelHeight;}
+
+    /* ANIMATION DATA */
     private AnimationTracker _animation;
     public int GetAnimationIndex(){return _animation.GetCurrentAnimation();}
     public void SetAnimationIndex(int animationIndex){_animation.SwitchAnimation(animationIndex);}
@@ -41,25 +32,37 @@ public class AnimatedSprite implements ISprite {
         _animation.FireTemporaryAnimation(animationIndex);
     }
 
-    int _textureWidth;
-    int _textureHeight;
-
+    /* CONSTRUCTOR */
     public AnimatedSprite(String spriteName){
-        _id = UUID.randomUUID();
+        super();
 
+        // aquire data
         AnimatedSpriteBlueprint blueprintData = SpriteBlueprintProvider.GetInstance().GetAnimatedSprite(spriteName);
 
+        // set texture
         _atlasTexture = TextureManager.getInstance().getTexture(blueprintData.TextureName);
-        _textureWidth = blueprintData.Width;
-        _textureHeight = blueprintData.Height;
-        _scale = blueprintData.Scale;
-        _message = blueprintData.Message;
+        SetScale(blueprintData.Scale);
+        SetFrameSize(blueprintData.Width, blueprintData.Height);
 
-        _position = new SimpleVector(0,0,0);
-
+        // other stuff
+        SetPosition(blueprintData.Position);
         _animation = new AnimationTracker(blueprintData.FrameLength, blueprintData.FrameWidths);
     }
 
+    /* IMAGE ADJUSTMENTS */
+    public void SetFrameSize(int width, int height){
+        _textureWidth = width;
+        _textureHeight = height;
+
+        RecalculateAdjustedTextureSize();
+    }
+
+    public void RecalculateAdjustedTextureSize(){
+        _scaledPixelWidth = (int) (_textureWidth * Scale);
+        _scaledPixelHeight = (int) (_textureHeight * Scale);
+    }
+
+    /* DRAW HELPERS */
     private TextureCoords IndexToCoordinates(int animation, int frame){
         int atlasWidth = _atlasTexture.getWidth();
         int atlasHeight = _atlasTexture.getHeight();
@@ -75,6 +78,7 @@ public class AnimatedSprite implements ISprite {
         return null;
     }
 
+    /* LOOP */
     public void Update(float elapsedTime){
         _animation.Update(elapsedTime);
     }
@@ -83,9 +87,9 @@ public class AnimatedSprite implements ISprite {
         TextureCoords target = IndexToCoordinates(_animation.GetCurrentAnimation(),
                                                   _animation.GetCurrentFrame());
 
-        fb.blit(_atlasTexture, target.x, target.y, (int) _position.x, (int) _position.y,
+        fb.blit(_atlasTexture, target.x, target.y, (int) Position.x, (int) Position.y,
                 _textureWidth, _textureHeight,
-                (int) (_textureWidth * _scale), (int) (_textureHeight * _scale),
+                (int) (_textureWidth * Scale), (int) (_textureHeight * Scale),
                 255, false);
     }
 }

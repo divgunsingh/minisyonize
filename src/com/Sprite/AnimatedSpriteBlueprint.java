@@ -1,5 +1,4 @@
 package com.Sprite;
-
 import com.threed.jpct.SimpleVector;
 
 public class AnimatedSpriteBlueprint {

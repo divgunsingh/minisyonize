@@ -10,14 +10,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SpriteManager {
     static private SpriteManager _instance;
 
-    SparseArray<HashMap<UUID, ISprite>> _sprites;
+    ConcurrentHashMap<Integer, ConcurrentHashMap<UUID, ISprite>> _sprites;
 
     private SpriteManager(){
-       _sprites = new SparseArray<HashMap<UUID, ISprite>>();
+       _sprites = new ConcurrentHashMap<Integer, ConcurrentHashMap<UUID, ISprite>>();
     }
 
     public static SpriteManager GetInstance(){
@@ -28,15 +29,15 @@ public class SpriteManager {
     }
 
     public SimpleSpriteToken AddSimpleSprite(String spriteName, int layer){
-        HashMap<UUID, ISprite> targetList = _sprites.get(layer);
+        ConcurrentHashMap<UUID, ISprite> targetList = _sprites.get(layer);
 
         if(targetList == null) {
-            targetList = new HashMap<UUID, ISprite>();
+            targetList = new ConcurrentHashMap<UUID, ISprite>();
 
             SimpleSprite fab = new SimpleSprite(spriteName);
             targetList.put(fab.GetId(), fab);
 
-            _sprites.append(layer, targetList);
+            _sprites.put(layer, targetList);
 
             return new SimpleSpriteToken(fab, layer);
         } else {
@@ -48,15 +49,15 @@ public class SpriteManager {
     }
 
     public TextSpriteToken AddTextSprite(String spriteName, int layer){
-        HashMap<UUID, ISprite> targetList = _sprites.get(layer);
+        ConcurrentHashMap<UUID, ISprite> targetList = _sprites.get(layer);
 
         if(targetList == null) {
-            targetList = new HashMap<UUID, ISprite>();
+            targetList = new ConcurrentHashMap<UUID, ISprite>();
 
             TextSprite fab = new TextSprite(spriteName);
             targetList.put(fab.GetId(), fab);
 
-            _sprites.append(layer, targetList);
+            _sprites.put(layer, targetList);
 
             return new TextSpriteToken(fab, layer);
         } else {
@@ -68,15 +69,15 @@ public class SpriteManager {
     }
 
     public AnimatedSpriteToken AddAnimatedSprite(String spriteName, int layer){
-        HashMap<UUID, ISprite> targetList = _sprites.get(layer);
+        ConcurrentHashMap<UUID, ISprite> targetList = _sprites.get(layer);
 
         if(targetList == null) {
-            targetList = new HashMap<UUID, ISprite>();
+            targetList = new ConcurrentHashMap<UUID, ISprite>();
 
             AnimatedSprite fab = new AnimatedSprite(spriteName);
             targetList.put(fab.GetId(), fab);
 
-            _sprites.append(layer, targetList);
+            _sprites.put(layer, targetList);
 
             return new AnimatedSpriteToken(fab, layer);
         } else {
@@ -87,8 +88,28 @@ public class SpriteManager {
         }
     }
 
+    public ScrollingSpriteToken AddScrollingSprite(String spriteName, int layer){
+        ConcurrentHashMap<UUID, ISprite> targetList = _sprites.get(layer);
+
+        if(targetList == null) {
+            targetList = new ConcurrentHashMap<UUID, ISprite>();
+
+            ScrollingSprite fab = new ScrollingSprite(spriteName);
+            targetList.put(fab.GetId(), fab);
+
+            _sprites.put(layer, targetList);
+
+            return new ScrollingSpriteToken(fab, layer);
+        } else {
+            ScrollingSprite fab = new ScrollingSprite(spriteName);
+            targetList.put(fab.GetId(), fab);
+
+            return new ScrollingSpriteToken(fab, layer);
+        }
+    }
+
     public void DeleteSprite(ISpriteToken token){
-        HashMap<UUID, ISprite> spriteList = _sprites.get(token.GetLayer());
+        ConcurrentHashMap<UUID, ISprite> spriteList = _sprites.get(token.GetLayer());
 
         if(spriteList == null)
             return;
@@ -98,7 +119,7 @@ public class SpriteManager {
 
     public void Update(float elapsedTime){
         for(int i = 0; i < _sprites.size(); i++){
-            HashMap<UUID, ISprite> currentMap = _sprites.get(_sprites.keyAt(i));
+            ConcurrentHashMap<UUID, ISprite> currentMap = _sprites.get(_sprites.keySet().toArray()[i]);
             for(UUID id : currentMap.keySet()){
                 currentMap.get(id).Update(elapsedTime);
             }
@@ -107,7 +128,7 @@ public class SpriteManager {
 
     public void Draw(FrameBuffer fb){
         for(int i = 0; i < _sprites.size(); i++){
-            HashMap<UUID, ISprite> currentMap = _sprites.get(_sprites.keyAt(i));
+            ConcurrentHashMap<UUID, ISprite> currentMap = _sprites.get(_sprites.keySet().toArray()[i]);
             Set<UUID> keySet = currentMap.keySet();
             for(UUID id : keySet){
                 currentMap.get(id).Draw(fb);
@@ -116,7 +137,7 @@ public class SpriteManager {
     }
 
     public void UpdateSpritePosition(SimpleVector newPosition, ISpriteToken token){
-        HashMap<UUID, ISprite> spriteList = _sprites.get(token.GetLayer());
+        ConcurrentHashMap<UUID, ISprite> spriteList = _sprites.get(token.GetLayer());
 
         if(spriteList == null)
             return;
@@ -129,7 +150,7 @@ public class SpriteManager {
     }
 
     public void UpdateSpriteScale(float scale, ISpriteToken token){
-        HashMap<UUID, ISprite> spriteList = _sprites.get(token.GetLayer());
+        ConcurrentHashMap<UUID, ISprite> spriteList = _sprites.get(token.GetLayer());
 
         if(spriteList == null)
             return;
@@ -141,22 +162,8 @@ public class SpriteManager {
         subject.SetScale(scale);
     }
 
-    public void UpdateSpriteTexture(Texture texture, ISpriteToken token){
-        HashMap<UUID, ISprite> spriteList = _sprites.get(token.GetLayer());
-
-        if(spriteList == null)
-            return;
-
-
-        ISprite subject = spriteList.get(token.GetId());
-        if(subject == null)
-            return;
-
-        subject.SetTexture(texture);
-    }
-
     public void UpdateSpriteMessage(String message, ISpriteToken token){
-        HashMap<UUID, ISprite> spriteList = _sprites.get(token.GetLayer());
+        ConcurrentHashMap<UUID, ISprite> spriteList = _sprites.get(token.GetLayer());
 
         if(spriteList == null)
             return;
@@ -169,7 +176,7 @@ public class SpriteManager {
     }
 
     public void SwitchSpriteAnimation(int animationIndex, ISpriteToken token){
-        HashMap<UUID, ISprite> spriteList = _sprites.get(token.GetLayer());
+        ConcurrentHashMap<UUID, ISprite> spriteList = _sprites.get(token.GetLayer());
 
         if(spriteList == null)
             return;
@@ -182,7 +189,7 @@ public class SpriteManager {
     }
 
     public void FireTemporarySpriteAnimation(int animationIndex, ISpriteToken token){
-        HashMap<UUID, ISprite> spriteList = _sprites.get(token.GetLayer());
+        ConcurrentHashMap<UUID, ISprite> spriteList = _sprites.get(token.GetLayer());
 
         if(spriteList == null)
             return;
@@ -192,5 +199,42 @@ public class SpriteManager {
             return;
 
         subject.FireTemporaryAnimation(animationIndex);
+    }
+
+    public int GetSpriteScaledPixelWidth(ISpriteToken token){
+        ConcurrentHashMap<UUID, ISprite> spriteList = _sprites.get(token.GetLayer());
+
+        if(spriteList == null)
+            return -1;
+
+        ISprite subject = spriteList.get(token.GetId());
+        if(subject == null)
+            return -1;
+
+        return subject.GetScaledPixelWidth();
+    }
+    public int GetSpriteScaledPixelHeight(ISpriteToken token){
+        ConcurrentHashMap<UUID, ISprite> spriteList = _sprites.get(token.GetLayer());
+
+        if(spriteList == null)
+            return -1;
+
+        ISprite subject = spriteList.get(token.GetId());
+        if(subject == null)
+            return -1;
+
+        return subject.GetScaledPixelHeight();
+    }
+    public SimpleVector GetSpriteScaledCentre(ISpriteToken token){
+        ConcurrentHashMap<UUID, ISprite> spriteList = _sprites.get(token.GetLayer());
+
+        if(spriteList == null)
+            return null;
+
+        ISprite subject = spriteList.get(token.GetId());
+        if(subject == null)
+            return null;
+
+        return subject.GetScaledCentre();
     }
 }

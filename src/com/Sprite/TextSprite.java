@@ -8,57 +8,58 @@ import com.threed.jpct.TextureManager;
 
 import java.util.UUID;
 
-public class TextSprite implements ISprite{
+public class TextSprite extends BaseSprite{
+    /* BASIC IMAGE DATA */
+    private Texture _atlasTexture;
+    public Texture GetTexture() {return _atlasTexture;}
+
+    int _textureWidth;
+    int _textureHeight;
+    int _scaledPixelWidth;
+    int _scaledPixelHeight;
+
+    public int GetScaledPixelWidth(){return _scaledPixelWidth;}
+    public int GetScaledPixelHeight() {return _scaledPixelHeight;}
+
+    /* TEXT DATA */
     private char[] _alphabet;
-
-    private UUID _id;
-    public UUID GetId() {return _id;}
-    public void SetId(UUID value) {_id = value;}
-
-    private SimpleVector _position;
-    public SimpleVector GetPosition(){
-        return _position;
-    }
-    public void SetPosition(SimpleVector value){
-        _position = value;
-    }
-
-    private float _scale;
-    public float GetScale() {return _scale;}
-    public void SetScale(float value) {
-        _scale = value;}
 
     private String _message;
     public String GetMessage() {return _message;}
     public void SetMessage(String value) {_message = value;}
 
-    private Texture _atlasTexture;
-    public Texture GetTexture() {Logger.log("WARNING! GetTexture called on TextSprite"); return null;}
-    public void SetTexture(Texture value) {Logger.log("WARNING! SetTexture called on TextSprite");}
-
-    public int GetAnimationIndex() {Logger.log("WARNING! GetAnimationIndex called on TextSprite"); return -1;}
-    public void SetAnimationIndex(int value) {Logger.log("WARNING! SetMessage called on TextSprite");}
-
-    public void FireTemporaryAnimation(int animationIndex){Logger.log("WARNING! FireTemporaryAnimation called on TextSprite");}
-
-    int _textureWidth;
-    int _textureHeight;
-
+    /* CONSTRUCTOR */
     public TextSprite(String spriteName){
-        _id = UUID.randomUUID();
+        super();
 
+        // aquire data
         TextSpriteBlueprint blueprintData = SpriteBlueprintProvider.GetInstance().GetTextSprite(spriteName);
 
+        // set image
         _atlasTexture = TextureManager.getInstance().getTexture(blueprintData.TextureName);
-        _textureWidth = blueprintData.Width;
-        _textureHeight = blueprintData.Height;
-        _alphabet = blueprintData.CharOrder;
-        _scale = blueprintData.Scale;
-        _message = blueprintData.Message;
+        SetScale(blueprintData.Scale);
+        SetFrameSize(blueprintData.Width, blueprintData.Height);
 
-        _position = new SimpleVector(0,0,0);
+        // other stuff
+        _alphabet = blueprintData.CharOrder;
+        _message = blueprintData.Message;
+        SetPosition(blueprintData.Position);
     }
 
+    /* IMAGE ADJUSTMENTS */
+    private void SetFrameSize(int width, int height){
+        _textureWidth = width;
+        _textureHeight = height;
+
+        RecalculateAdjustedTextureSize();
+    }
+
+    public void RecalculateAdjustedTextureSize(){
+        _scaledPixelWidth = (int) (_textureWidth * Scale);
+        _scaledPixelHeight = (int) (_textureHeight * Scale);
+    }
+
+    /* DRAW HELPERS */
     private TextureCoords IndexToCoordinates(int index){
         int atlasWidth = _atlasTexture.getWidth();
         int atlasHeight = _atlasTexture.getHeight();
@@ -89,13 +90,14 @@ public class TextSprite implements ISprite{
         return -1;
     }
 
+    /* LOOP */
     public void Update(float elapsedTime){}
 
     public void Draw(FrameBuffer fb) {
-        int targetY = (int) _position.y;
+        int targetY = (int) Position.y;
 
         for(int i = 0; i < _message.length(); ++i){
-            int targetX = (int) _position.x + (int) (i * (_scale * _textureWidth));
+            int targetX = (int) Position.x + (int) (i * (Scale * _textureWidth));
 
             int characterIndex = IndexFromCharacter(_message.charAt(i));
             // if -1 then the character doesn't exist in the atlas
@@ -106,7 +108,7 @@ public class TextSprite implements ISprite{
 
             fb.blit(_atlasTexture, atlasCoords.x, atlasCoords.y, targetX, targetY,
                     _textureWidth, _textureHeight,
-                    (int) (_textureWidth * _scale), (int) (_textureHeight * _scale),
+                    (int) (_textureWidth * Scale), (int) (_textureHeight * Scale),
                     255, false);
         }
     }

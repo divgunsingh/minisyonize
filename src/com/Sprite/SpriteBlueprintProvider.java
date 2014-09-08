@@ -16,11 +16,13 @@ public class SpriteBlueprintProvider {
     private Map<String, SimpleSpriteBlueprint> _simpleSprites;
     private Map<String, TextSpriteBlueprint> _textSprites;
     private Map<String, AnimatedSpriteBlueprint> _animatedSprites;
+    private Map<String, ScrollingSpriteBlueprint> _scrollingSprites;
 
     private SpriteBlueprintProvider(){
         _simpleSprites = new HashMap<String, SimpleSpriteBlueprint>();
         _textSprites = new HashMap<String, TextSpriteBlueprint>();
         _animatedSprites = new HashMap<String, AnimatedSpriteBlueprint>();
+        _scrollingSprites = new HashMap<String, ScrollingSpriteBlueprint>();
     }
 
     public SimpleSpriteBlueprint GetSimpleSprite(String key){
@@ -30,6 +32,8 @@ public class SpriteBlueprintProvider {
     public TextSpriteBlueprint GetTextSprite(String key) {return _textSprites.get(key);}
 
     public AnimatedSpriteBlueprint GetAnimatedSprite(String key) {return _animatedSprites.get(key);}
+
+    public ScrollingSpriteBlueprint GetScrollingSprite(String key){return _scrollingSprites.get(key);}
 
     public void AddSimpleSpriteBlueprint(String key, SimpleSpriteBlueprint sprite){
         if(!_simpleSprites.containsKey(key))
@@ -44,5 +48,10 @@ public class SpriteBlueprintProvider {
     public void AddAnimatedSpriteBlueprint(String key, AnimatedSpriteBlueprint sprite){
         if(!_animatedSprites.containsKey(key))
             _animatedSprites.put(key, sprite);
+    }
+
+    public void AddScrollingSpriteBlueprint(String key, ScrollingSpriteBlueprint sprite){
+        if(!_scrollingSprites.containsKey(key))
+            _scrollingSprites.put(key, sprite);
     }
 }

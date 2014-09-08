@@ -44,6 +44,8 @@ public class AnimationTracker {
             _currentAnimation = targetIndex;
             _currentFrame = 0;
 
+            _timeTillNextFrame = _frameLength;
+
             _inTemporaryAnimation = true;
         }
     }
