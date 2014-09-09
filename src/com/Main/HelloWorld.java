@@ -14,11 +14,13 @@ import android.view.MotionEvent;
 
 import com.Bullet.Bullet;
 import com.Bullet.BulletManager;
+import com.Collision.CollisionManager;
 import com.Enemy.Enemy;
 import com.Enemy.EnemyManager;
 import com.Messaging.Messager;
 import com.Messaging.ScreentouchMessage;
 import com.Player.Player;
+import com.Provider.ScreenInfoProvider;
 import com.Sprite.AnimatedSpriteBlueprint;
 import com.Sprite.SimpleSpriteBlueprint;
 import com.Sprite.SimpleSpriteToken;
@@ -57,6 +59,7 @@ public class HelloWorld extends Activity {
 	//Player calling
 	Bullet bullet;
 	Enemy enemy;
+	CollisionManager collisionManager;
      Player player;
 	private GLSurfaceView mGLView;
 	private MyRenderer renderer = null;
@@ -78,7 +81,7 @@ public class HelloWorld extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		//enemyManager = new EnemyManager();
-		bulletManager= new BulletManager();
+
 		Logger.log("onCreate");
 
 		if (master != null) {
@@ -203,7 +206,7 @@ public class HelloWorld extends Activity {
 
 				sun = new Light(world);
 				sun.setIntensity(250, 250, 250);
-
+ScreenInfoProvider.GetInstance().Initialize(w, h);
 				// Create a texture out of the icon...:-)
 				Texture texture = new Texture(BitmapHelper.rescale(BitmapHelper.convert(getResources().getDrawable(R.raw.enemy2)), 64, 64));
 				TextureManager.getInstance().addTexture("texture", texture);
@@ -215,7 +218,7 @@ public class HelloWorld extends Activity {
 				//Animated Sprite
 				SpriteBlueprintProvider.GetInstance().AddAnimatedSpriteBlueprint("playerlabel", new AnimatedSpriteBlueprint("player", new SimpleVector(0,1000,0), 10f, new int[]{4} , 2f, 16, 16));
 				//Simple Sprite
-				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("bullet_blueprint", new SimpleSpriteBlueprint("bullet", new SimpleVector(0,0,0) , 5f));
+				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("bullet_blueprint", new SimpleSpriteBlueprint("bullet", new SimpleVector(0,0,0) , 2.5f));
 				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("enemy_blueprint", new SimpleSpriteBlueprint("enemy", new SimpleVector(0,0,0) , 5f));
 				//sSpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("sprite_blueprint_label", new SimpleSpriteBlueprint("texture_label", new SimpleVector(0,0,0) , 5f));
 				// to instantiate a sprite from the sprite manager 
@@ -266,7 +269,7 @@ public class HelloWorld extends Activity {
 	prviousTickTime = System.currentTimeMillis();
 			enemyManager.Update(1.0f / 60.0f);
 			player.update(1.0f / 60.0f);
-			
+			collisionManager.GetInstance().Update(1.0f / 60.0f);
         	
         	
         }

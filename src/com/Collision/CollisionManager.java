@@ -40,19 +40,18 @@ public class CollisionManager {
         // we are comparing continuums to each other,
         // therefore we do not need to compare the last one to anything
         // (hence the size() - 1)
-        Object[] keySet = _bodies.keySet().toArray();
         for(int i = 0; i < _bodies.size() - 1; ++i){
             // we get our subject
-            ICollisionBody subject = _bodies.get(keySet[i]);
+            ICollisionBody subject = _bodies.get(_bodies.keySet().toArray()[i]);
             if(subject != null) {
                 // all previous i indices have already been compared to it,
                 // so we can proceed to only the indices past i.
                 // we do not need to check collision on the last object.
                 for (int j = i + 1; j < _bodies.size(); j++)
                     // now we run our collision checks
-                    if (subject.DoesCollide(_bodies.get(keySet[j])))
-                        HandleCollision(_bodies.get(keySet[i]),
-                                _bodies.get(keySet[j]));
+                    if (subject.DoesCollide(_bodies.get(_bodies.keySet().toArray()[j])))
+                        HandleCollision(_bodies.get(_bodies.keySet().toArray()[i]),
+                                _bodies.get(_bodies.keySet().toArray()[j]));
             }
         }
     }

@@ -7,10 +7,10 @@ public class Health {
 		health = Health;
 	}
 	
-	private boolean isDead() {
-		 return true;
+	public boolean isDead() {
+		 return health<=0;
 	}
-	 void Damage(int amount) {
+	public void Damage(int amount) {
 		 health = health-amount;
 		 
 	 }
