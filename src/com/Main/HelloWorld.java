@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 
 import com.Bullet.Bullet;
 import com.Bullet.BulletManager;
+import com.Cloud.Cloud;
 import com.Collision.CollisionManager;
 import com.Enemy.Enemy;
 import com.Enemy.EnemyManager;
@@ -21,11 +22,14 @@ import com.Messaging.Messager;
 import com.Messaging.ScreentouchMessage;
 import com.Player.Player;
 import com.Provider.ScreenInfoProvider;
+import com.Score.ScoreManager;
 import com.Sprite.AnimatedSpriteBlueprint;
 import com.Sprite.SimpleSpriteBlueprint;
 import com.Sprite.SimpleSpriteToken;
 import com.Sprite.SpriteBlueprintProvider;
 import com.Sprite.SpriteManager;
+import com.Sprite.TextSprite;
+import com.Sprite.TextSpriteBlueprint;
 import com.minisyonize.R;
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
@@ -58,7 +62,9 @@ public class HelloWorld extends Activity {
 	private static HelloWorld master = null;
 	//Player calling
 	Bullet bullet;
+	Cloud cloud;
 	Enemy enemy;
+	ScoreManager scoreManager;
 	CollisionManager collisionManager;
      Player player;
 	private GLSurfaceView mGLView;
@@ -206,7 +212,7 @@ public class HelloWorld extends Activity {
 
 				sun = new Light(world);
 				sun.setIntensity(250, 250, 250);
-ScreenInfoProvider.GetInstance().Initialize(w, h);
+                ScreenInfoProvider.GetInstance().Initialize(w, h);
 				// Create a texture out of the icon...:-)
 				Texture texture = new Texture(BitmapHelper.rescale(BitmapHelper.convert(getResources().getDrawable(R.raw.enemy2)), 64, 64));
 				TextureManager.getInstance().addTexture("texture", texture);
@@ -214,18 +220,24 @@ ScreenInfoProvider.GetInstance().Initialize(w, h);
 				TextureManager.getInstance().addTexture("enemy", new Texture(getResources().openRawResource(R.raw.enemy), true));
 				TextureManager.getInstance().addTexture("player", new Texture(getResources().openRawResource(R.raw.playerall), true));
 				TextureManager.getInstance().addTexture("bullet", new Texture(getResources().openRawResource(R.raw.bullet), true));
+				TextureManager.getInstance().addTexture("cloud", new Texture(getResources().openRawResource(R.raw.cloud), true));
+				TextureManager.getInstance().addTexture("text", new Texture(getResources().openRawResource(R.raw.alphabets)));
+				TextureManager.getInstance().addTexture("digits", new Texture(getResources().openRawResource(R.raw.digits)));
+				TextureManager.getInstance().addTexture("text1", new Texture(getResources().openRawResource(R.raw.alphabets)));
+				TextureManager.getInstance().addTexture("digits1", new Texture(getResources().openRawResource(R.raw.digits)));
 				// to create a simple sprite blueprint in the sprite blueprint provider 
 				//Animated Sprite
+				
 				SpriteBlueprintProvider.GetInstance().AddAnimatedSpriteBlueprint("playerlabel", new AnimatedSpriteBlueprint("player", new SimpleVector(0,1000,0), 10f, new int[]{4} , 2f, 16, 16));
 				//Simple Sprite
 				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("bullet_blueprint", new SimpleSpriteBlueprint("bullet", new SimpleVector(0,0,0) , 2.5f));
 				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("enemy_blueprint", new SimpleSpriteBlueprint("enemy", new SimpleVector(0,0,0) , 5f));
-				//sSpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("sprite_blueprint_label", new SimpleSpriteBlueprint("texture_label", new SimpleVector(0,0,0) , 5f));
-				// to instantiate a sprite from the sprite manager 
-			//	SpriteManager.GetInstance().AddAnimatedSprite("playerlabel", 0);
-				//SpriteManager.GetInstance().AddSimpleSprite("playerlabel", 0);
-				//SimpleSpriteToken tokenPlayer=SpriteManager.GetInstance().AddSimpleSprite("playerlabel", 0);
-                
+				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("cloud_blueprint", new SimpleSpriteBlueprint("cloud", new SimpleVector(0,0,0) , 5f));
+				SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("digits_blueprint", new TextSpriteBlueprint("50", "digits", new SimpleVector(501,100,0), 5f,new char[] {'0','1','2','3','4','5','6','7','8','9'}  , 8, 8));
+				SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("text_blueprint", new TextSpriteBlueprint("NOOFBULLETSCREATED", "text", new SimpleVector(50,500,0), 2f,new char[] {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'}  , 16, 16));
+				SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("digits_blueprint1", new TextSpriteBlueprint("100", "digits1", new SimpleVector(501,200,0), 5f,new char[] {'0','1','2','3','4','5','6','7','8','9'}  , 8, 8));
+				SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("text_blueprint1", new TextSpriteBlueprint("NOOFENEMIESDESTOYRED", "text1", new SimpleVector(100,500,0), 2f,new char[] {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'}  , 16, 16));
+				cloud=new Cloud();
 				cube = Primitives.getCube(10);
 				cube.calcTextureWrapSpherical();
 				cube.setTexture("texture");
@@ -246,11 +258,9 @@ ScreenInfoProvider.GetInstance().Initialize(w, h);
 				MemoryHelper.compact();
 				//calling constructor of player class
 				player=new Player();
+				 scoreManager=ScoreManager.GetInstance();
 			    enemyManager= new EnemyManager(player.position,w,h);
-				
-			   
-				//bullet=new Bullet();
-		// enemy=new Enemy();
+
 				if (master == null) {
 					Logger.log("Saving master Activity!");
 					master = HelloWorld.this;
@@ -288,8 +298,7 @@ ScreenInfoProvider.GetInstance().Initialize(w, h);
 			
 			//world.renderScene(fb);
 			//world.draw(fb);
-			//draw our object 
-			//SpriteManager.update();
+		
 			update();
 			SpriteManager.GetInstance().Update(1f/10.0f);
 			SpriteManager.GetInstance().Draw(fb);

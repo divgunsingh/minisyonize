@@ -11,9 +11,11 @@ import com.CollisionPayload.PlayerCollisionPayload;
 import com.Health.Health;
 import com.CollisionPayload.EnemyCollisionPayload;
 import com.Messaging.CollisionMessage;
+import com.Messaging.EnemyDeletedMessage;
 import com.Messaging.IAction;
 import com.Messaging.IMessage;
 import com.Messaging.Messager;
+import com.Messaging.ScreentouchMessage;
 import com.Provider.ScreenInfoProvider;
 import com.Sprite.SimpleSpriteToken;
 import com.Sprite.SpriteManager;
@@ -29,7 +31,7 @@ public class Enemy {
 	SimpleSpriteToken token;
 	int health2;
 
-	float speed = 5;
+	float speed = 15;
 
 	SphereCollisionToken collisionToken;
 
@@ -43,8 +45,10 @@ public class Enemy {
 				0);
 
 		direction.scalarMul(speed);
+	//	Logger.log("Diection Enemy"+direction.toString());
 		this.velocity = direction;
-		this.setPosition(position);
+		
+		setPosition(position);
 
 		Messager.GetInstance().Subscribe(CollisionMessage.class, new IAction() {
 			public void Invoke(IMessage message) {
@@ -57,9 +61,9 @@ public class Enemy {
 	public void Update(float elapsedtime) {
 		SimpleVector adjustedVelocity = velocity;
 		adjustedVelocity.scalarMul(elapsedtime * 60.0f);
-
+		
 		token.SetPosition(position.calcAdd(adjustedVelocity));
-
+		//Logger.log("adjustedVelocity"+position.calcAdd(adjustedVelocity).toString());
 		if (health.isDead())
 			delete();
 
@@ -74,13 +78,14 @@ public class Enemy {
 			return;
 
 		if (payload instanceof PlayerCollisionPayload) {
-			Logger.log("ENEMY MET PLAYER");
+			//Logger.log("ENEMY MET PLAYER");
 			delete();
 		}
 		if (payload instanceof BulletCollisionPayload) {
-			Logger.log("ENEMY FOUND BULLET (" + position + ")");
+			//Logger.log("ENEMY FOUND BULLET (" + position + ")");
 			BulletCollisionPayload bulletpayload = (BulletCollisionPayload) payload;
 			health.Damage(bulletpayload.damage);
+			Messager.GetInstance().Publish(new EnemyDeletedMessage());
 		}
 
 	}
@@ -94,7 +99,7 @@ public class Enemy {
 	public void delete() {
 		token.Delete();
 		collisionToken.Delete();
-
+		
 		isReadyForCleanUp = true;
 	}
 

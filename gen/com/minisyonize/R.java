@@ -17,13 +17,16 @@ public final class R {
         public static final int main=0x7f030000;
     }
     public static final class raw {
-        public static final int background=0x7f040000;
-        public static final int bullet=0x7f040001;
-        public static final int cloud=0x7f040002;
-        public static final int enemy=0x7f040003;
-        public static final int enemy2=0x7f040004;
-        public static final int player=0x7f040005;
-        public static final int playerall=0x7f040006;
+        public static final int alphabets=0x7f040000;
+        public static final int background=0x7f040001;
+        public static final int bullet=0x7f040002;
+        public static final int cloud=0x7f040003;
+        public static final int digits=0x7f040004;
+        public static final int enemy=0x7f040005;
+        public static final int enemy2=0x7f040006;
+        public static final int player=0x7f040007;
+        public static final int playerall=0x7f040008;
+        public static final int star=0x7f040009;
     }
     public static final class string {
         public static final int app_name=0x7f050001;

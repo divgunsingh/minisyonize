@@ -7,6 +7,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import android.view.VelocityTracker;
 
 import com.Enemy.Enemy;
+import com.Messaging.BulletCreatedMessage;
+import com.Messaging.Messager;
 import com.threed.jpct.Logger;
 import com.threed.jpct.SimpleVector;
 
@@ -25,6 +27,8 @@ public class BulletManager {
 		
 		Bullet bullet = new Bullet(playerPosition,direction);
 		bullets.add(bullet);
+		
+		Messager.GetInstance().Publish(new BulletCreatedMessage());
 	}
 
 	public void update(float elapsedTime) {

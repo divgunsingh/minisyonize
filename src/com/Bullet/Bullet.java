@@ -77,7 +77,7 @@ public class Bullet {
 			return;
 
 		if (payload instanceof EnemyCollisionPayload) {
-			Logger.log("BULLET FOUND ENEMY (" + position + ")");
+			//Logger.log("BULLET FOUND ENEMY (" + position + ")");
 			delete();
 		}
 

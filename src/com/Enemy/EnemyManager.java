@@ -18,7 +18,7 @@ public class EnemyManager {
 	int screenwidth, screenheight;
 	public int width, height;
 	public int max, min;
-	float enemySpeed = 1f;
+	
 	SimpleVector playerPosition;
 	
 	Timer spawnTimer;
@@ -27,18 +27,18 @@ public class EnemyManager {
 
 	public EnemyManager(SimpleVector PlayerPosition, int h, int w) {
 		enemies = new CopyOnWriteArrayList<Enemy>();
-		playerPosition = PlayerPosition;
+		this.playerPosition = PlayerPosition;
 		width = w;
 		height = h;
-		
-		spawnTimer = new Timer(3);
+		//SpawnEnemy();
+		spawnTimer = new Timer(8);
 	}
 
 	public void Update(float elapsedTime) {
 		spawnTimer.update(elapsedTime);
 		if(spawnTimer.isFinished()){
 			SpawnEnemy();
-			spawnTimer.Reset(3);
+			spawnTimer.Reset(8);
 		}
 		
 		for (Enemy e : enemies) {
