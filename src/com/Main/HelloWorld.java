@@ -12,6 +12,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.MotionEvent;
 
+import com.Background.Background;
 import com.Bullet.Bullet;
 import com.Bullet.BulletManager;
 import com.Cloud.Cloud;
@@ -24,6 +25,7 @@ import com.Player.Player;
 import com.Provider.ScreenInfoProvider;
 import com.Score.ScoreManager;
 import com.Sprite.AnimatedSpriteBlueprint;
+import com.Sprite.ScrollingSpriteBlueprint;
 import com.Sprite.SimpleSpriteBlueprint;
 import com.Sprite.SimpleSpriteToken;
 import com.Sprite.SpriteBlueprintProvider;
@@ -64,6 +66,7 @@ public class HelloWorld extends Activity {
 	Bullet bullet;
 	Cloud cloud;
 	Enemy enemy;
+	Background background;
 	ScoreManager scoreManager;
 	CollisionManager collisionManager;
      Player player;
@@ -223,11 +226,16 @@ public class HelloWorld extends Activity {
 				TextureManager.getInstance().addTexture("cloud", new Texture(getResources().openRawResource(R.raw.cloud), true));
 				TextureManager.getInstance().addTexture("text", new Texture(getResources().openRawResource(R.raw.alphabets)));
 				TextureManager.getInstance().addTexture("digits", new Texture(getResources().openRawResource(R.raw.digits)));
-				TextureManager.getInstance().addTexture("text1", new Texture(getResources().openRawResource(R.raw.alphabets)));
-				TextureManager.getInstance().addTexture("digits1", new Texture(getResources().openRawResource(R.raw.digits)));
+				//TextureManager.getInstance().addTexture("text1", new Texture(getResources().openRawResource(R.raw.alphabets)));
+				//TextureManager.getInstance().addTexture("digits1", new Texture(getResources().openRawResource(R.raw.digits)));
 				// to create a simple sprite blueprint in the sprite blueprint provider 
 				//Animated Sprite
-				
+				Texture backgroundtexture=new Texture(getResources().openRawResource(R.raw.background2), true);
+				backgroundtexture.setFiltering(false);
+				TextureManager.getInstance().addTexture("background", backgroundtexture);
+                SpriteBlueprintProvider.GetInstance().AddScrollingSpriteBlueprint("background_blueprint", new ScrollingSpriteBlueprint("background", new SimpleVector(0,0,0) , 1f, 0.5f, 0,1));
+
+                background = new Background(256);
 				SpriteBlueprintProvider.GetInstance().AddAnimatedSpriteBlueprint("playerlabel", new AnimatedSpriteBlueprint("player", new SimpleVector(0,1000,0), 10f, new int[]{4} , 2f, 16, 16));
 				//Simple Sprite
 				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("bullet_blueprint", new SimpleSpriteBlueprint("bullet", new SimpleVector(0,0,0) , 2.5f));
@@ -235,8 +243,8 @@ public class HelloWorld extends Activity {
 				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("cloud_blueprint", new SimpleSpriteBlueprint("cloud", new SimpleVector(0,0,0) , 5f));
 				SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("digits_blueprint", new TextSpriteBlueprint("50", "digits", new SimpleVector(501,100,0), 5f,new char[] {'0','1','2','3','4','5','6','7','8','9'}  , 8, 8));
 				SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("text_blueprint", new TextSpriteBlueprint("NOOFBULLETSCREATED", "text", new SimpleVector(50,500,0), 2f,new char[] {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'}  , 16, 16));
-				SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("digits_blueprint1", new TextSpriteBlueprint("100", "digits1", new SimpleVector(501,200,0), 5f,new char[] {'0','1','2','3','4','5','6','7','8','9'}  , 8, 8));
-				SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("text_blueprint1", new TextSpriteBlueprint("NOOFENEMIESDESTOYRED", "text1", new SimpleVector(100,500,0), 2f,new char[] {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'}  , 16, 16));
+				//SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("digits_blueprint1", new TextSpriteBlueprint("100", "digits1", new SimpleVector(501,200,0), 5f,new char[] {'0','1','2','3','4','5','6','7','8','9'}  , 8, 8));
+				//SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("text_blueprint1", new TextSpriteBlueprint("NOOFENEMIESDESTOYRED", "text1", new SimpleVector(100,500,0), 2f,new char[] {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'}  , 16, 16));
 				cloud=new Cloud();
 				cube = Primitives.getCube(10);
 				cube.calcTextureWrapSpherical();

@@ -31,8 +31,8 @@ TextSpriteToken scoreText,scoreText1,scoreDigits,scoreDigits1;
 		
 		scoreText=SpriteManager.GetInstance().AddTextSprite("text_blueprint", 0);
 		scoreDigits=SpriteManager.GetInstance().AddTextSprite("digits_blueprint", 0);
-		scoreText1=SpriteManager.GetInstance().AddTextSprite("text_blueprint1", 0);
-		scoreDigits1=SpriteManager.GetInstance().AddTextSprite("digits_blueprint1", 0);
+		//scoreText1=SpriteManager.GetInstance().AddTextSprite("text_blueprint1", 0);
+	//	scoreDigits1=SpriteManager.GetInstance().AddTextSprite("digits_blueprint1", 0);
 		
 
 		Messager.GetInstance().Subscribe(BulletCreatedMessage.class, new IAction() {
@@ -60,8 +60,9 @@ TextSpriteToken scoreText,scoreText1,scoreDigits,scoreDigits1;
 
 	public void enemyDeleted() {
 		count=count+enemydeleted;
-		String str = String.valueOf(count);
-		scoreDigits1.SetMessage(str);
+		//String str = String.valueOf(count);
+		//scoreDigits1.SetMessage(str);
+		
 	}
 	public void resetScore() {
 		
