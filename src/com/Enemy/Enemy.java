@@ -31,12 +31,12 @@ public class Enemy {
 	SimpleSpriteToken token;
 	int health2;
 
-	float speed = 15;
+	float speed = 2;
 
 	SphereCollisionToken collisionToken;
 
 	public Enemy(SimpleVector position, SimpleVector direction) {
-		health = new Health(1);
+		health = new Health(2);
 
 		isReadyForCleanUp = false;
 		collisionToken = CollisionManager.GetInstance().AddCollisionSphere(50f,
@@ -45,11 +45,10 @@ public class Enemy {
 				0);
 
 		direction.scalarMul(speed);
-	//	Logger.log("Diection Enemy"+direction.toString());
 		this.velocity = direction;
 		
 		setPosition(position);
-
+		
 		Messager.GetInstance().Subscribe(CollisionMessage.class, new IAction() {
 			public void Invoke(IMessage message) {
 				OnCollide(((CollisionMessage) message)
@@ -62,8 +61,10 @@ public class Enemy {
 		SimpleVector adjustedVelocity = velocity;
 		adjustedVelocity.scalarMul(elapsedtime * 60.0f);
 		
-		token.SetPosition(position.calcAdd(adjustedVelocity));
-		//Logger.log("adjustedVelocity"+position.calcAdd(adjustedVelocity).toString());
+		SimpleVector newPosition = position;
+		newPosition.add(adjustedVelocity);
+		token.SetPosition(newPosition);
+	
 		if (health.isDead())
 			delete();
 
@@ -73,7 +74,7 @@ public class Enemy {
 	}
 
 	public void OnCollide(ICollisionPayload payload) {
-		// Logger.log("Collision Detected");
+		//Logger.log("Collision Detected");
 		if (payload == null)
 			return;
 

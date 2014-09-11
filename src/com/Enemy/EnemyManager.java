@@ -31,14 +31,14 @@ public class EnemyManager {
 		width = w;
 		height = h;
 		//SpawnEnemy();
-		spawnTimer = new Timer(8);
+		spawnTimer = new Timer(4);
 	}
 
 	public void Update(float elapsedTime) {
 		spawnTimer.update(elapsedTime);
 		if(spawnTimer.isFinished()){
 			SpawnEnemy();
-			spawnTimer.Reset(8);
+			spawnTimer.Reset(4);
 		}
 		
 		for (Enemy e : enemies) {

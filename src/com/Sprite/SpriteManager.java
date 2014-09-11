@@ -237,4 +237,8 @@ public class SpriteManager {
 
         return subject.GetScaledCentre();
     }
+    
+    public void Delete(){
+    	_sprites.clear();
+    }
 }

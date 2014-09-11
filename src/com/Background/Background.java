@@ -16,7 +16,7 @@ public class Background {
 				 ScrollingSpriteToken token = SpriteManager.GetInstance().AddScrollingSprite("background_blueprint", -2);
 				// move scrolling sprite to (x,y)
 				token.SetPosition(new SimpleVector(x, y, 0));
-			}
+			} 
 		}
 	}
 }

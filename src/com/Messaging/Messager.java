@@ -7,6 +7,7 @@ import com.threed.jpct.Logger;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Messager {
 	private static Messager _instance = null;
@@ -17,10 +18,10 @@ public class Messager {
 		return _instance;
 	}
 	
-    Map<Type, ActionQueue> queueMap;
+    ConcurrentHashMap<Type, ActionQueue> queueMap;
 
     private Messager(){
-        queueMap = new HashMap<Type, ActionQueue>();
+        queueMap = new ConcurrentHashMap<Type, ActionQueue>();
     }
 
     public void Publish(IMessage data){

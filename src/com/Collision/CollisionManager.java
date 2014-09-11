@@ -81,4 +81,8 @@ public class CollisionManager {
         if(_bodies.containsKey(token.GetId()))
             _bodies.remove(token.GetId());
     }
+    
+    public void Delete(){
+    	_bodies.clear();
+    }
 }

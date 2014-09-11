@@ -2,12 +2,13 @@ package com.Messaging;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ActionQueue {
-    private List<IAction> _payload;
+    private CopyOnWriteArrayList<IAction> _payload;
 
     public ActionQueue (){
-        _payload = new ArrayList<IAction>();
+        _payload = new CopyOnWriteArrayList<IAction>();
     }
 
     public void AddToQueue(IAction action){

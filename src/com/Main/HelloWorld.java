@@ -32,6 +32,8 @@ import com.Sprite.SpriteBlueprintProvider;
 import com.Sprite.SpriteManager;
 import com.Sprite.TextSprite;
 import com.Sprite.TextSpriteBlueprint;
+import com.States.IState;
+import com.States.PlayState;
 import com.minisyonize.R;
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
@@ -57,19 +59,13 @@ import com.threed.jpct.util.MemoryHelper;
  */
 
 public class HelloWorld extends Activity {
-	EnemyManager enemyManager;
-	BulletManager bulletManager;
-   Messager messager;
+
 	// Used to handle pause and resume...
 	private static HelloWorld master = null;
-	//Player calling
-	Bullet bullet;
-	Cloud cloud;
-	Enemy enemy;
+	// Player calling
 	Background background;
-	ScoreManager scoreManager;
-	CollisionManager collisionManager;
-     Player player;
+
+	IState currentState;
 	private GLSurfaceView mGLView;
 	private MyRenderer renderer = null;
 	private FrameBuffer fb = null;
@@ -89,7 +85,7 @@ public class HelloWorld extends Activity {
 
 	protected void onCreate(Bundle savedInstanceState) {
 
-		//enemyManager = new EnemyManager();
+		// enemyManager = new EnemyManager();
 
 		Logger.log("onCreate");
 
@@ -104,7 +100,8 @@ public class HelloWorld extends Activity {
 			public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display) {
 				// Ensure that we get a 16bit framebuffer. Otherwise, we'll fall
 				// back to Pixelflinger on some device (read: Samsung I7500)
-				int[] attributes = new int[] { EGL10.EGL_DEPTH_SIZE, 16, EGL10.EGL_NONE };
+				int[] attributes = new int[] { EGL10.EGL_DEPTH_SIZE, 16,
+						EGL10.EGL_NONE };
 				EGLConfig[] configs = new EGLConfig[1];
 				int[] result = new int[1];
 				egl.eglChooseConfig(display, attributes, configs, 1, result);
@@ -149,13 +146,12 @@ public class HelloWorld extends Activity {
 
 	public boolean onTouchEvent(MotionEvent me) {
 
-		
 		if (me.getAction() == MotionEvent.ACTION_DOWN) {
 			xpos = me.getX();
 			ypos = me.getY();
-			
-			Messager.GetInstance().Publish(new ScreentouchMessage(xpos,ypos));
-			//player.Fire(new SimpleVector(xpos,ypos,0));
+
+			Messager.GetInstance().Publish(new ScreentouchMessage(xpos, ypos));
+			// player.Fire(new SimpleVector(xpos,ypos,0));
 			return true;
 		}
 
@@ -194,20 +190,21 @@ public class HelloWorld extends Activity {
 
 	class MyRenderer implements GLSurfaceView.Renderer {
 
-		private long prviousTickTime= System.currentTimeMillis();
+		private long prviousTickTime = System.currentTimeMillis();
 		private long time = System.currentTimeMillis();
-		private long deltaTickTime = System.currentTimeMillis() - prviousTickTime ;
+		private long deltaTickTime = System.currentTimeMillis()
+				- prviousTickTime;
 
 		public MyRenderer() {
 		}
 
 		public void onSurfaceChanged(GL10 gl, int w, int h) {
-			
+
 			if (fb != null) {
 				fb.dispose();
 			}
 			fb = new FrameBuffer(gl, w, h);
-            
+
 			if (master == null) {
 
 				world = new World();
@@ -215,37 +212,103 @@ public class HelloWorld extends Activity {
 
 				sun = new Light(world);
 				sun.setIntensity(250, 250, 250);
-                ScreenInfoProvider.GetInstance().Initialize(w, h);
+				ScreenInfoProvider.GetInstance().Initialize(w, h);
 				// Create a texture out of the icon...:-)
-				Texture texture = new Texture(BitmapHelper.rescale(BitmapHelper.convert(getResources().getDrawable(R.raw.enemy2)), 64, 64));
+				Texture texture = new Texture(BitmapHelper.rescale(
+						BitmapHelper.convert(getResources().getDrawable(
+								R.raw.enemy2)), 64, 64));
 				TextureManager.getInstance().addTexture("texture", texture);
-				// to create a texture in the manager 
-				TextureManager.getInstance().addTexture("enemy", new Texture(getResources().openRawResource(R.raw.enemy), true));
-				TextureManager.getInstance().addTexture("player", new Texture(getResources().openRawResource(R.raw.playerall), true));
-				TextureManager.getInstance().addTexture("bullet", new Texture(getResources().openRawResource(R.raw.bullet), true));
-				TextureManager.getInstance().addTexture("cloud", new Texture(getResources().openRawResource(R.raw.cloud), true));
-				TextureManager.getInstance().addTexture("text", new Texture(getResources().openRawResource(R.raw.alphabets)));
-				TextureManager.getInstance().addTexture("digits", new Texture(getResources().openRawResource(R.raw.digits)));
-				//TextureManager.getInstance().addTexture("text1", new Texture(getResources().openRawResource(R.raw.alphabets)));
-				//TextureManager.getInstance().addTexture("digits1", new Texture(getResources().openRawResource(R.raw.digits)));
-				// to create a simple sprite blueprint in the sprite blueprint provider 
-				//Animated Sprite
-				Texture backgroundtexture=new Texture(getResources().openRawResource(R.raw.background2), true);
+				// to create a texture in the manager
+				TextureManager.getInstance().addTexture(
+						"enemy",
+						new Texture(
+								getResources().openRawResource(R.raw.enemy),
+								true));
+				TextureManager.getInstance().addTexture(
+						"player",
+						new Texture(getResources().openRawResource(
+								R.raw.playera), true));
+				TextureManager.getInstance().addTexture(
+						"bullet",
+						new Texture(getResources()
+								.openRawResource(R.raw.bullet), true));
+				TextureManager.getInstance().addTexture(
+						"cloud",
+						new Texture(
+								getResources().openRawResource(R.raw.cloud),
+								true));
+				TextureManager.getInstance().addTexture(
+						"text",
+						new Texture(getResources().openRawResource(
+								R.raw.alphabets)));
+				TextureManager.getInstance().addTexture(
+						"digits",
+						new Texture(getResources()
+								.openRawResource(R.raw.digits)));
+				// TextureManager.getInstance().addTexture("text1", new
+				// Texture(getResources().openRawResource(R.raw.alphabets)));
+				// TextureManager.getInstance().addTexture("digits1", new
+				// Texture(getResources().openRawResource(R.raw.digits)));
+				// to create a simple sprite blueprint in the sprite blueprint
+				// provider
+				// Animated Sprite
+				Texture backgroundtexture = new Texture(getResources()
+						.openRawResource(R.raw.background2), true);
 				backgroundtexture.setFiltering(false);
-				TextureManager.getInstance().addTexture("background", backgroundtexture);
-                SpriteBlueprintProvider.GetInstance().AddScrollingSpriteBlueprint("background_blueprint", new ScrollingSpriteBlueprint("background", new SimpleVector(0,0,0) , 1f, 0.5f, 0,1));
+				TextureManager.getInstance().addTexture("background",
+						backgroundtexture);
+				SpriteBlueprintProvider.GetInstance()
+						.AddScrollingSpriteBlueprint(
+								"background_blueprint",
+								new ScrollingSpriteBlueprint("background",
+										new SimpleVector(0, 0, 0), 1f, 0.5f, 0,
+										1));
 
-                background = new Background(256);
-				SpriteBlueprintProvider.GetInstance().AddAnimatedSpriteBlueprint("playerlabel", new AnimatedSpriteBlueprint("player", new SimpleVector(0,1000,0), 10f, new int[]{4} , 2f, 16, 16));
-				//Simple Sprite
-				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("bullet_blueprint", new SimpleSpriteBlueprint("bullet", new SimpleVector(0,0,0) , 2.5f));
-				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("enemy_blueprint", new SimpleSpriteBlueprint("enemy", new SimpleVector(0,0,0) , 5f));
-				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint("cloud_blueprint", new SimpleSpriteBlueprint("cloud", new SimpleVector(0,0,0) , 5f));
-				SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("digits_blueprint", new TextSpriteBlueprint("50", "digits", new SimpleVector(501,100,0), 5f,new char[] {'0','1','2','3','4','5','6','7','8','9'}  , 8, 8));
-				SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("text_blueprint", new TextSpriteBlueprint("NOOFBULLETSCREATED", "text", new SimpleVector(50,500,0), 2f,new char[] {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'}  , 16, 16));
-				//SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("digits_blueprint1", new TextSpriteBlueprint("100", "digits1", new SimpleVector(501,200,0), 5f,new char[] {'0','1','2','3','4','5','6','7','8','9'}  , 8, 8));
-				//SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("text_blueprint1", new TextSpriteBlueprint("NOOFENEMIESDESTOYRED", "text1", new SimpleVector(100,500,0), 2f,new char[] {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'}  , 16, 16));
-				cloud=new Cloud();
+				background = new Background(256);
+				SpriteBlueprintProvider.GetInstance()
+						.AddAnimatedSpriteBlueprint(
+								"playerlabel",
+								new AnimatedSpriteBlueprint("player",
+										new SimpleVector(0, 1000, 0), 5f,
+										new int[] { 4 }, 5f, 32, 32));
+				// Simple Sprite
+				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint(
+						"bullet_blueprint",
+						new SimpleSpriteBlueprint("bullet", new SimpleVector(0,
+								0, 0), 2.5f));
+				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint(
+						"enemy_blueprint",
+						new SimpleSpriteBlueprint("enemy", new SimpleVector(0,
+								0, 0), 5f));
+				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint(
+						"cloud_blueprint",
+						new SimpleSpriteBlueprint("cloud", new SimpleVector(0,
+								0, 0), 5f));
+				SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint(
+						"digits_blueprint",
+						new TextSpriteBlueprint("50", "digits",
+								new SimpleVector(501, 100, 0), 5f, new char[] {
+										'0', '1', '2', '3', '4', '5', '6', '7',
+										'8', '9' }, 8, 8));
+				SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint(
+						"text_blueprint",
+						new TextSpriteBlueprint("NOOFBULLETSCREATED", "text",
+								new SimpleVector(50, 500, 0), 2f, new char[] {
+										'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+										'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+										'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+										'Y', 'Z', '0', '1', '2', '3', '4', '5',
+										'6', '7', '8', '9' }, 16, 16));
+				// SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("digits_blueprint1",
+				// new TextSpriteBlueprint("100", "digits1", new
+				// SimpleVector(501,200,0), 5f,new char[]
+				// {'0','1','2','3','4','5','6','7','8','9'} , 8, 8));
+				// SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("text_blueprint1",
+				// new TextSpriteBlueprint("NOOFENEMIESDESTOYRED", "text1", new
+				// SimpleVector(100,500,0), 2f,new char[]
+				// {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'}
+				// , 16, 16));
+
 				cube = Primitives.getCube(10);
 				cube.calcTextureWrapSpherical();
 				cube.setTexture("texture");
@@ -264,11 +327,14 @@ public class HelloWorld extends Activity {
 				sv.z -= 100;
 				sun.setPosition(sv);
 				MemoryHelper.compact();
-				//calling constructor of player class
-				player=new Player();
-				 scoreManager=ScoreManager.GetInstance();
-			    enemyManager= new EnemyManager(player.position,w,h);
+				// calling constructor of player class
+				// player=new Player();
+				// scoreManager=ScoreManager.GetInstance();
+				// enemyManager= new EnemyManager(player.position,w,h);
+				Logger.log("IN INIt");
 
+				currentState = new PlayState();
+				currentState.initialize();
 				if (master == null) {
 					Logger.log("Saving master Activity!");
 					master = HelloWorld.this;
@@ -278,19 +344,23 @@ public class HelloWorld extends Activity {
 
 		public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		}
-        
-		
-		
-		public void update(){
-        	
-	deltaTickTime=System.currentTimeMillis() - prviousTickTime;
-	prviousTickTime = System.currentTimeMillis();
-			enemyManager.Update(1.0f / 60.0f);
-			player.update(1.0f / 60.0f);
-			collisionManager.GetInstance().Update(1.0f / 60.0f);
-        	
-        	
-        }
+
+		public void update() {
+			if (currentState.IsReadyToChangeState()) {
+				currentState = currentState.GetNextState();
+
+				SpriteManager.GetInstance().Delete();
+				CollisionManager.GetInstance().Delete();
+
+				currentState.initialize();
+			}
+
+			deltaTickTime = System.currentTimeMillis() - prviousTickTime;
+			prviousTickTime = System.currentTimeMillis();
+			currentState.update(1.0f / 60.0f);
+
+		}
+
 		public void onDrawFrame(GL10 gl) {
 			if (touchTurn != 0) {
 				cube.rotateY(touchTurn);
@@ -303,13 +373,12 @@ public class HelloWorld extends Activity {
 			}
 
 			fb.clear(back);
-			
-			//world.renderScene(fb);
-			//world.draw(fb);
-		
+
+			// world.renderScene(fb);
+			// world.draw(fb);
+
 			update();
-			SpriteManager.GetInstance().Update(1f/10.0f);
-			SpriteManager.GetInstance().Draw(fb);
+			currentState.draw(fb);
 			fb.display();
 
 			if (System.currentTimeMillis() - time >= 1000) {

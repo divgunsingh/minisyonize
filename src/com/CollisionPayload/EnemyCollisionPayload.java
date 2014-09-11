@@ -4,11 +4,11 @@ import com.CollisionPayload.BaseCollisionPayload;
 import com.CollisionPayload.ICollisionPayload;
 
 public class EnemyCollisionPayload extends BaseCollisionPayload {
-int damage;
+public int damage;
 
 public EnemyCollisionPayload(int damage){
 	
-	
+	this.damage=damage;
 	
 	
 }
