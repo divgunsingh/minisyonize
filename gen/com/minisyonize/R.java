@@ -20,14 +20,20 @@ public final class R {
         public static final int alphabets=0x7f040000;
         public static final int background=0x7f040001;
         public static final int background2=0x7f040002;
-        public static final int bullet=0x7f040003;
-        public static final int cloud=0x7f040004;
-        public static final int digits=0x7f040005;
-        public static final int enemy=0x7f040006;
-        public static final int enemy2=0x7f040007;
-        public static final int playera=0x7f040008;
-        public static final int playerb=0x7f040009;
-        public static final int star=0x7f04000a;
+        public static final int bgmusic=0x7f040003;
+        public static final int bonus=0x7f040004;
+        public static final int bullet=0x7f040005;
+        public static final int bullet2=0x7f040006;
+        public static final int click=0x7f040007;
+        public static final int cloud=0x7f040008;
+        public static final int digits=0x7f040009;
+        public static final int enemy=0x7f04000a;
+        public static final int enemy2=0x7f04000b;
+        public static final int gameover=0x7f04000c;
+        public static final int hit=0x7f04000d;
+        public static final int playera=0x7f04000e;
+        public static final int playerb=0x7f04000f;
+        public static final int star=0x7f040010;
     }
     public static final class string {
         public static final int app_name=0x7f050001;

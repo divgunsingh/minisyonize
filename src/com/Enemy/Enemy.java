@@ -32,11 +32,10 @@ public class Enemy {
 	int health2;
 
 	float speed = 2;
-
 	SphereCollisionToken collisionToken;
 
 	public Enemy(SimpleVector position, SimpleVector direction) {
-		health = new Health(2);
+		health = new Health(1);
 
 		isReadyForCleanUp = false;
 		collisionToken = CollisionManager.GetInstance().AddCollisionSphere(50f,

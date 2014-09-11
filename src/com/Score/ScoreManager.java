@@ -53,15 +53,14 @@ TextSpriteToken scoreText,scoreText1,scoreDigits,scoreDigits1;
 	}
 
 	public void buletAdded() {
-		count=count+bulletcount;
-		String str = String.valueOf(count);
-		scoreDigits.SetMessage(str);
+		//count=count+bulletcount;
+		
 	}
 
 	public void enemyDeleted() {
 		count=count+enemydeleted;
-		//String str = String.valueOf(count);
-		//scoreDigits1.SetMessage(str);
+		String str = String.valueOf(count);
+		scoreDigits.SetMessage(str);
 		
 	}
 	public void resetScore() {

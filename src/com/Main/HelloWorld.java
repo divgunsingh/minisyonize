@@ -24,6 +24,7 @@ import com.Messaging.ScreentouchMessage;
 import com.Player.Player;
 import com.Provider.ScreenInfoProvider;
 import com.Score.ScoreManager;
+import com.Sound.SoundManager;
 import com.Sprite.AnimatedSpriteBlueprint;
 import com.Sprite.ScrollingSpriteBlueprint;
 import com.Sprite.SimpleSpriteBlueprint;
@@ -149,7 +150,7 @@ public class HelloWorld extends Activity {
 		if (me.getAction() == MotionEvent.ACTION_DOWN) {
 			xpos = me.getX();
 			ypos = me.getY();
-
+			SoundManager.GetInstance().PlaySound("bgmusic");
 			Messager.GetInstance().Publish(new ScreentouchMessage(xpos, ypos));
 			// player.Fire(new SimpleVector(xpos,ypos,0));
 			return true;
@@ -231,7 +232,7 @@ public class HelloWorld extends Activity {
 				TextureManager.getInstance().addTexture(
 						"bullet",
 						new Texture(getResources()
-								.openRawResource(R.raw.bullet), true));
+								.openRawResource(R.raw.bullet2), true));
 				TextureManager.getInstance().addTexture(
 						"cloud",
 						new Texture(
@@ -286,7 +287,7 @@ public class HelloWorld extends Activity {
 								0, 0), 5f));
 				SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint(
 						"digits_blueprint",
-						new TextSpriteBlueprint("50", "digits",
+						new TextSpriteBlueprint("0", "digits",
 								new SimpleVector(501, 100, 0), 5f, new char[] {
 										'0', '1', '2', '3', '4', '5', '6', '7',
 										'8', '9' }, 8, 8));
@@ -308,6 +309,9 @@ public class HelloWorld extends Activity {
 				// SimpleVector(100,500,0), 2f,new char[]
 				// {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'}
 				// , 16, 16));
+				
+				SoundManager.GetInstance().LoadSound("bgmusic", R.raw.bonus, getApplicationContext());
+				
 
 				cube = Primitives.getCube(10);
 				cube.calcTextureWrapSpherical();
