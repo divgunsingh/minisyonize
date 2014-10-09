@@ -13,6 +13,9 @@ public interface ICollisionBody {
 
     public void SetPosition(SimpleVector position);
     public SimpleVector GetPosition();
+    
+    public void SetRadius(float radius);
+    public float GetRadius();
 
     public boolean DoesCollide(ICollisionBody subject);
 }

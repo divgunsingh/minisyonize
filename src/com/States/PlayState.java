@@ -2,20 +2,25 @@ package com.States;
 
 
 
+import android.content.Intent;
+
 import com.Bullet.Bullet;
 import com.Bullet.BulletManager;
 import com.Collision.CollisionManager;
 import com.Enemy.Enemy;
 import com.Enemy.EnemyManager;
+import com.Main.HelloWorld;
 import com.Messaging.IAction;
 import com.Messaging.IMessage;
 import com.Messaging.Messager;
 import com.Messaging.PlayerDeadMessage;
 import com.Player.Player;
 import com.Provider.ScreenInfoProvider;
+import com.Score.PlayerHealthScore;
 import com.Score.ScoreManager;
 import com.Sprite.SpriteManager;
 import com.States.IState;
+import com.minisyonize.Splash;
 import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.SimpleVector;
 import com.threed.jpct.Logger;
@@ -39,6 +44,7 @@ public class PlayState implements IState {
 		w=ScreenInfoProvider.GetInstance().ScreenWidth;
 		enemymanager = new EnemyManager(player.position,h,w);
 		scoreManager.GetInstance();
+		PlayerHealthScore.GetInstance();
 		scoreCardState = null;
 		isReadyToChangeState = false;
 		
@@ -51,13 +57,13 @@ public class PlayState implements IState {
 
 	public void update(float elapsedtime) {
 		player.update(elapsedtime);
-	    Logger.log("player updated"+player.toString());
+	    //Logger.log("player updated"+player.toString());
 		enemymanager.Update(elapsedtime);
-		Logger.log("enemy manager updated "+enemymanager.toString());
+		//Logger.log("enemy manager updated "+enemymanager.toString());
 		CollisionManager.GetInstance().Update(elapsedtime);
-	    Logger.log("collision manager");
+		//Logger.log("collision manager");
 		SpriteManager.GetInstance().Update(elapsedtime);
-		 Logger.log("Sprite manager");
+		// Logger.log("Sprite manager");
 	}
 
 	public void draw(FrameBuffer fb) {
@@ -67,5 +73,8 @@ public class PlayState implements IState {
 	private void OnPlayerDead(PlayerDeadMessage message){
 		isReadyToChangeState = true;
 		scoreCardState = new ScoreCardState();
+		
+	
+		
 	}
 }

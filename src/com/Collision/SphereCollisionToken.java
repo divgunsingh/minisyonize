@@ -15,6 +15,10 @@ public class SphereCollisionToken implements ICollisionToken{
     public void SetPosition(SimpleVector position){
         CollisionManager.GetInstance().SetBodyPosition(position, this);
     }
+    
+    public float GetRadius(){
+    	return CollisionManager.GetInstance().GetBodyRadius(this);
+    }
 
     public void Delete(){
         CollisionManager.GetInstance().DeleteCollisionBody(this);

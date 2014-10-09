@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public class CollisionSphere implements ICollisionBody{
     private float _radius;
+    public void SetRadius(float radius){_radius = radius;}
     public float GetRadius(){return _radius;}
 
     private ICollisionPayload _payload;

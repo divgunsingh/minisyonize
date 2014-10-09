@@ -8,9 +8,17 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.app.Activity;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.MotionEvent;
+import android.view.Surface;
+import android.view.WindowManager;
 
 import com.Background.Background;
 import com.Bullet.Bullet;
@@ -20,6 +28,7 @@ import com.Collision.CollisionManager;
 import com.Enemy.Enemy;
 import com.Enemy.EnemyManager;
 import com.Messaging.Messager;
+import com.Messaging.MovePlayerMessage;
 import com.Messaging.ScreentouchMessage;
 import com.Player.Player;
 import com.Provider.ScreenInfoProvider;
@@ -59,13 +68,15 @@ import com.threed.jpct.util.MemoryHelper;
  * 
  */
 
-public class HelloWorld extends Activity {
+public class HelloWorld extends Activity implements SensorEventListener {
 
 	// Used to handle pause and resume...
 	private static HelloWorld master = null;
 	// Player calling
 	Background background;
-
+	private Display mDisplay;
+	 private float mSensorX, mSensorY;
+	 private WindowManager mWindowManager;
 	IState currentState;
 	private GLSurfaceView mGLView;
 	private MyRenderer renderer = null;
@@ -73,6 +84,9 @@ public class HelloWorld extends Activity {
 	private World world = null;
 	private RGBColor back = new RGBColor(50, 50, 100);
 
+	private SensorManager sensorManager;
+	private Sensor accelerometer;
+	
 	private float touchTurn = 0;
 	private float touchTurnUp = 0;
 
@@ -93,7 +107,13 @@ public class HelloWorld extends Activity {
 		if (master != null) {
 			copy(master);
 		}
-
+		 mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+	        mDisplay = mWindowManager.getDefaultDisplay();
+		sensorManager =  (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+		accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		
+		sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+		
 		super.onCreate(savedInstanceState);
 		mGLView = new GLSurfaceView(getApplication());
 
@@ -116,15 +136,41 @@ public class HelloWorld extends Activity {
 	}
 
 	@Override
+	public void onSensorChanged(SensorEvent event) {
+		
+	
+         
+            /* mSensorX = event.values[0];
+             mSensorY = event.values[1];
+             Messager.GetInstance().Publish(new MovePlayerMessage(mSensorX, mSensorY));
+             
+         */
+		/*
+		float ax = event.values[0];
+		float ay = event.values[1];
+		
+		
+	Messager.GetInstance().Publish(new MovePlayerMessage(ax,ay));
+	*/
+	}
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	protected void onPause() {
 		super.onPause();
 		mGLView.onPause();
+		sensorManager.unregisterListener(this);
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 		mGLView.onResume();
+		sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
 	}
 
 	@Override
@@ -228,7 +274,7 @@ public class HelloWorld extends Activity {
 				TextureManager.getInstance().addTexture(
 						"player",
 						new Texture(getResources().openRawResource(
-								R.raw.playera), true));
+								R.raw.playersprites), true));
 				TextureManager.getInstance().addTexture(
 						"bullet",
 						new Texture(getResources()
@@ -246,10 +292,10 @@ public class HelloWorld extends Activity {
 						"digits",
 						new Texture(getResources()
 								.openRawResource(R.raw.digits)));
-				// TextureManager.getInstance().addTexture("text1", new
+				 //TextureManager.getInstance().addTexture("text1", new
 				// Texture(getResources().openRawResource(R.raw.alphabets)));
-				// TextureManager.getInstance().addTexture("digits1", new
-				// Texture(getResources().openRawResource(R.raw.digits)));
+				 TextureManager.getInstance().addTexture("digits1", new
+				 Texture(getResources().openRawResource(R.raw.digits)));
 				// to create a simple sprite blueprint in the sprite blueprint
 				// provider
 				// Animated Sprite
@@ -270,8 +316,8 @@ public class HelloWorld extends Activity {
 						.AddAnimatedSpriteBlueprint(
 								"playerlabel",
 								new AnimatedSpriteBlueprint("player",
-										new SimpleVector(0, 1000, 0), 5f,
-										new int[] { 4 }, 5f, 32, 32));
+										new SimpleVector(0, 1000, 0), 1f,
+										new int[] { 4 }, 5f, 80, 80));
 				// Simple Sprite
 				SpriteBlueprintProvider.GetInstance().AddSimpleSpriteBlueprint(
 						"bullet_blueprint",
@@ -300,10 +346,10 @@ public class HelloWorld extends Activity {
 										'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
 										'Y', 'Z', '0', '1', '2', '3', '4', '5',
 										'6', '7', '8', '9' }, 16, 16));
-				// SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("digits_blueprint1",
-				// new TextSpriteBlueprint("100", "digits1", new
-				// SimpleVector(501,200,0), 5f,new char[]
-				// {'0','1','2','3','4','5','6','7','8','9'} , 8, 8));
+				 SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("digits_blueprint1",
+			new TextSpriteBlueprint("5", "digits1", new
+				 SimpleVector(w/3-150,h-200,0), 5f,new char[]
+				 {'0','1','2','3','4','5','6','7','8','9'} , 8, 8));
 				// SpriteBlueprintProvider.GetInstance().AddTextSpriteBlueprint("text_blueprint1",
 				// new TextSpriteBlueprint("NOOFENEMIESDESTOYRED", "text1", new
 				// SimpleVector(100,500,0), 2f,new char[]
@@ -335,8 +381,7 @@ public class HelloWorld extends Activity {
 				// player=new Player();
 				// scoreManager=ScoreManager.GetInstance();
 				// enemyManager= new EnemyManager(player.position,w,h);
-				Logger.log("IN INIt");
-
+				
 				currentState = new PlayState();
 				currentState.initialize();
 				if (master == null) {

@@ -76,6 +76,13 @@ public class CollisionManager {
         if(_bodies.containsKey(token.GetId()))
             _bodies.get(token.GetId()).SetPosition(position);
     }
+    
+    public float GetBodyRadius(ICollisionToken token){
+    	if(_bodies.containsKey(token.GetId()))
+    		return _bodies.get(token.GetId()).GetRadius();
+    	
+		return 0;
+    }
 
     public void DeleteCollisionBody(ICollisionToken token){
         if(_bodies.containsKey(token.GetId()))
